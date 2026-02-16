@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useInternetIdentity } from '../../hooks/useInternetIdentity';
+import { useCreateBooking } from '../../hooks/useQueries';
 import {
   Dialog,
   DialogContent,
@@ -9,12 +10,13 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, Wrench, CreditCard } from 'lucide-react';
+import { Calendar, Wrench, CreditCard, Loader2 } from 'lucide-react';
 import MechanicAssistanceAddon from './MechanicAssistanceAddon';
 import PricingBreakdown from './PricingBreakdown';
 import PaymentMethodSelector from '../payments/PaymentMethodSelector';
 import WaiverSigningModal from '../waivers/WaiverSigningModal';
 import { toast } from 'sonner';
+import { BookingType } from '../../lib/types';
 
 interface GarageBookingModalProps {
   open: boolean;
@@ -30,6 +32,7 @@ export default function GarageBookingModal({
   onOpenDIYSupport,
 }: GarageBookingModalProps) {
   const { identity, login } = useInternetIdentity();
+  const createBooking = useCreateBooking();
   const [currentTab, setCurrentTab] = useState('details');
   const [assistanceRequested, setAssistanceRequested] = useState(false);
   const [waiverSigned, setWaiverSigned] = useState(false);
@@ -55,14 +58,35 @@ export default function GarageBookingModal({
     );
   }
 
-  const handleConfirmBooking = () => {
+  const handleConfirmBooking = async () => {
     if (garage?.waiverRequired && !waiverSigned) {
       setShowWaiverModal(true);
       return;
     }
 
-    toast.success('Booking confirmed! (Simulated)');
-    onOpenChange(false);
+    try {
+      const basePrice = Number(garage?.hourlyRate || 0);
+      const assistanceAddon = assistanceRequested ? 50 : 0;
+      const totalPrice = basePrice + assistanceAddon;
+
+      const now = BigInt(Date.now() * 1000000); // Convert to nanoseconds
+      const oneHourLater = now + BigInt(3600 * 1000000000); // Add 1 hour in nanoseconds
+
+      await createBooking.mutateAsync({
+        bookingType: BookingType.garageRental,
+        mechanicId: null,
+        garageId: BigInt(garage?.id || 0),
+        scheduledStart: now,
+        scheduledEnd: oneHourLater,
+        estimatedPrice: BigInt(totalPrice),
+      });
+
+      toast.success('Booking confirmed! Funds have been held in escrow.');
+      onOpenChange(false);
+    } catch (error: any) {
+      console.error('Booking error:', error);
+      toast.error(error.message || 'Failed to create booking. Please try again.');
+    }
   };
 
   return (
@@ -124,8 +148,20 @@ export default function GarageBookingModal({
                 membershipDiscount={0}
               />
               <PaymentMethodSelector />
-              <Button onClick={handleConfirmBooking} className="w-full" size="lg">
-                Confirm Booking
+              <Button
+                onClick={handleConfirmBooking}
+                className="w-full"
+                size="lg"
+                disabled={createBooking.isPending}
+              >
+                {createBooking.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  'Confirm Booking'
+                )}
               </Button>
             </TabsContent>
           </Tabs>

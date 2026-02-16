@@ -1,24 +1,19 @@
 # Specification
 
 ## Summary
-**Goal:** Add a functional DIY Support layer plus trust & safety, revenue, admin, and policy workflows, while labeling unsupported capabilities as “Coming Soon” with simulated UX.
+**Goal:** Replace simulated/“Coming Soon” payment and notification flows with functional backend-driven internal escrow ledger payments, Internet Identity–only RBAC, and a complete in-app notification system.
 
 **Planned changes:**
-- Add a prominent “Need Help While DIY?” entry point on Garage Detail and in the DIY/garage booking flow, opening a DIY Support panel/modal with auth gating.
-- Build DIY Support features: repair scenario tool/consumable recommendations (saved per user session) and a backend-calculated repair cost estimator with stored “Recent estimates”.
-- Add “mechanic assistance mid-booking” as a booking add-on request; persist and show request status in both customer and mechanic dashboards.
-- Implement Trust & Safety workflows: identity verification submission (document upload + status) with admin review actions; insurance upload workflows for mechanics/garage owners with admin approval/rejection.
-- Implement waiver digital signing for garage rentals (typed name + checkbox + timestamp) and enforce signing when waiverRequired=true; store and display signed records in booking details and admin tools.
-- Implement dispute resolution ticketing tied to bookings/listings with statuses, comments/timeline, optional attachment reference, and admin resolution/closure with note (non-real-time).
-- Add “Coming Soon” labeled simulated UX flows for unsupported features: video consultation upsell, in-app messaging, push notifications, real-time tracking, escrow payments, and Apple Pay/Google Pay options; ensure consistency with existing Coming Soon map patterns.
-- Implement revenue model integration: configurable platform fee/commission settings, backend fee calculations applied to bookings/rentals, and an admin revenue tracking view with totals/basic breakdowns.
-- Implement featured mechanic boost as a functional flag with pricing metadata (no payment), admin approval controls, visible “Featured” badge, and browse prioritization.
-- Implement emergency service surge pricing with mechanic-configurable settings and customer-facing adjusted price display; persist and compute in backend.
-- Implement mechanic pro membership and customer DIY membership states (no billing), persisted and reflected in UI, including DIY membership garage rental discount line items in pricing breakdown.
-- Enhance Admin Dashboard with pages for verification, waitlist management (pending/invited/converted), and a demand “heatmap” view aggregated by location string (no external maps), all admin-gated.
-- Add a mobile-first “Fix My Car” intake flow (issue description + media upload) that routes to suggested next steps and shows estimated cost; AI pre-diagnosis remains simulated and labeled Coming Soon.
-- Add desktop browse enhancements: mechanic comparison (select up to N), advanced filter panel layout, and a toggleable map+list split-screen mode with Coming Soon map where needed.
-- Add a no-show rating penalty system: authorized marking with reason, backend penalty records, visibility in user dashboards and admin reporting/filtering.
-- Add desktop calendar drag-and-drop booking UX; if not fully supported, keep it simulated with “Coming Soon” labeling and graceful reset without breaking existing pages.
+- Implement backend Internet Identity–only RBAC with a persisted Principal → Role registry (Admin, Mechanic, Customer, Garage Owner) and enforce authorization across privileged methods.
+- Add a backend-managed Admin whitelist and backend admin-check methods for frontend route protection and admin action gating.
+- Build a provider-agnostic internal escrow ledger in the backend with persisted transactions, per-booking escrow accounting, and auditable state transitions (Pending → Held → Released → Refunded → Disputed).
+- Add admin-only backend actions to release funds and issue refunds with validation, persistence, and ledger/audit updates.
+- Enforce backend booking lifecycle gating so bookings cannot be marked Completed unless escrow funds are Released.
+- Update the booking/payment UI to remove simulated payment entry and “Coming Soon” options, wire confirmation to real backend mutations, and label flows as “Test Mode – Internal Ledger Active”.
+- Add user-visible payment status surfaces and transaction history views powered by backend queries.
+- Add Admin UI to list transactions, filter/view statuses, and perform Release/Refund actions with proper unauthorized handling and post-action refresh.
+- Implement a persisted in-app notifications system (backend + frontend) with types: BookingCreated, BookingConfirmed, FundsReleased, DisputeOpened, AccountSuspended; include read/unread and event-driven creation.
+- Add a top-nav notification badge + dropdown (recent notifications, unread count, mark-as-read) and a Notification Center page (unread/all filter, bulk mark-all-as-read).
+- Replace “Coming Soon”/simulated toasts and placeholders in payments/notifications with real mutation-driven success/error toasts and state refresh.
 
-**User-visible outcome:** Users can access DIY Support during garage browsing/booking to get saved tool recommendations and cost estimates, request mechanic assistance mid-booking, complete verification/insurance/waiver flows, open and track disputes, see memberships/discounts and pricing modifiers applied, and interact with clearly labeled “Coming Soon” simulated flows for unsupported features; admins can review verifications/insurance, manage waitlists, view demand aggregation, track revenue, and manage disputes and no-show penalties.
+**User-visible outcome:** Users can complete bookings using an internal-ledger escrow flow (clearly labeled test mode), see real payment/escrow status and transaction history, receive and manage in-app notifications, and admins can securely manage transactions (release/refund) with RBAC-enforced access and immediate UI updates.

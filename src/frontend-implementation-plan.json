@@ -1,697 +1,258 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "NDNP Marketplace — DIY Support, Trust & Safety, Revenue/Admin UX, Coming-Soon Simulations, and Browse Enhancements (Frontend-only)",
+  "title": "NDNP Marketplace — Internal Ledger Payments UI + Transactions + In‑App Notifications (No Coming Soon)",
   "requirements": [
     {
-      "id": "REQ-12",
-      "summary": "Add a prominent “Need Help While DIY?” entry point on Garage Detail and in booking flow that opens a dedicated DIY Support modal/panel with auth gating.",
+      "id": "REQ-38",
+      "summary": "Replace simulated payment UI with a functional internal-ledger booking payment confirmation flow and explicit Test Mode labeling.",
       "acceptanceCriteria": [
-        "On Garage Detail page, a visible “Need Help While DIY?” action is present on both mobile and desktop breakpoints.",
-        "Clicking the button opens a DIY Support UI surface (page, panel, or modal) without navigation errors.",
-        "The DIY Support UI surface can be reached by authenticated users; unauthenticated users are prompted to sign in."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/diy/DIYSupportModal.tsx",
-          "operation": "create",
-          "description": "Create a reusable DIY Support modal/panel shell (open/close, tabs/sections, auth-required guard). Use the authorization component patterns (Internet Identity + role-based access checks) to gate access; for guests, show a sign-in prompt using existing login UI patterns. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/garages/GarageDetail.tsx",
-          "operation": "modify",
-          "description": "Add a prominent “Need Help While DIY?” button (mobile/desktop visible) and wire it to open the DIYSupportModal without navigation errors; ensure unauthenticated users see a sign-in prompt flow. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/booking/GarageBookingModal.tsx",
-          "operation": "create",
-          "description": "Create a garage booking modal used from Garage Detail that will also contain a DIY Support entry point within the booking flow (button/step that opens DIYSupportModal). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/garages/GarageDetail.tsx",
-          "operation": "modify",
-          "description": "Wire the existing “Book This Space” button to open the new GarageBookingModal and include the DIY Support entry point within that modal flow. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-13",
-      "summary": "Add repair selector + tool/consumable recommendations inside DIY Support and allow saving recommendations to the user’s DIY session.",
-      "acceptanceCriteria": [
-        "DIY Support panel includes a repair selector and shows a generated list of recommended tools/consumables.",
-        "Users can save the recommended tool list to the current DIY support session and see it on refresh.",
-        "Backend persists DIY support sessions (or equivalent) per user so tool recommendations are not lost on reload."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add React Query hooks for tool recommendations (fetch all categories, fetch recommendation by category, and save recommendation) using the existing backend actor methods from frontend/src/backend.d.ts; handle auth/authorization failures gracefully in UI. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/diy/ToolRecommendationsSection.tsx",
-          "operation": "create",
-          "description": "Implement the DIY Support section UI: repair category selector, structured rendering of recommended tools/consumables, and a ‘Save to session’ action wired through hooks. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/diy/DIYSupportModal.tsx",
-          "operation": "modify",
-          "description": "Embed ToolRecommendationsSection within the DIY Support modal, ensuring it is available only to authenticated users and persists data by refetching after save. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-14",
-      "summary": "Add a backend-driven repair cost estimator form in DIY Support with persisted history and a ‘Recent estimates’ list.",
-      "acceptanceCriteria": [
-        "DIY Support panel includes an estimator form and displays a breakdown (parts, labor, total) after submission.",
-        "Estimates are stored and listed in a “Recent estimates” section for the authenticated user.",
-        "Estimator calculations are deterministic and performed in backend logic (not only UI)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add React Query hooks for creating repair estimates and listing/fetching caller estimates using existing backend actor methods; ensure UI reads back computed totals from backend results. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/diy/RepairCostEstimatorSection.tsx",
-          "operation": "create",
-          "description": "Create estimator form UI (repair type, vehicle info free-text, parts cost, labor hours, hourly rate as needed) and show breakdown (parts/labor/total) from backend-returned estimate; include a ‘Recent estimates’ list using caller estimates hook. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/diy/DIYSupportModal.tsx",
-          "operation": "modify",
-          "description": "Add RepairCostEstimatorSection into the DIY Support modal with consistent layout and authenticated gating; refetch recent estimates after successful submission. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-15",
-      "summary": "Add mechanic assistance as a mid-booking add-on request and show assistance requests in customer and mechanic dashboards.",
-      "acceptanceCriteria": [
-        "During a garage rental booking flow (or booking detail), the user can add a mechanic assistance add-on and submit it.",
-        "Submitted assistance requests are persisted in backend state and linked to the user and the booking (or session).",
-        "Mechanic dashboard shows a list of incoming assistance requests with status (e.g., requested/accepted/declined/completed).",
-        "Customer dashboard shows submitted assistance requests and their status."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add hooks for creating assistance requests, listing caller requests, listing all requests (admin/mechanic views as applicable), and updating request status using existing backend actor methods; include error handling for authorization traps. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/booking/MechanicAssistanceAddon.tsx",
-          "operation": "create",
-          "description": "Create a booking add-on UI allowing users to request mechanic assistance (type selector + details text) and submit; wire submission through the create assistance request hook and show confirmation state. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/booking/GarageBookingModal.tsx",
-          "operation": "modify",
-          "description": "Integrate MechanicAssistanceAddon into the booking flow, associating the request with the current booking/session context used by the UI. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/dashboards/CustomerDashboard.tsx",
-          "operation": "modify",
-          "description": "Add a ‘Mechanic assistance requests’ section that lists the caller’s submitted assistance requests and their status (refresh-based, no real-time). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/dashboards/MechanicDashboard.tsx",
-          "operation": "modify",
-          "description": "Add an ‘Incoming assistance requests’ section that lists requests and allows status updates (accept/decline/complete) using the update status hook, without real-time. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-16",
-      "summary": "Add Coming Soon simulated multi-step UX for on-demand video consultation upsell within DIY Support.",
-      "acceptanceCriteria": [
-        "DIY Support UI includes a “Video consultation” option that is clearly marked “Coming Soon”.",
-        "Selecting the option shows a simulated multi-step flow (e.g., select duration, confirm, success) with no attempt to start an actual call.",
-        "All relevant UI surfaces include consistent Coming Soon labeling and do not crash when used."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/coming-soon/ComingSoonBadge.tsx",
-          "operation": "create",
-          "description": "Create a small reusable Coming Soon badge/label component to standardize unsupported-feature labeling across the app. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/coming-soon/SimulatedFlowModal.tsx",
-          "operation": "create",
-          "description": "Create a generic simulated multi-step modal component (stepper-like progression, confirm, success) that performs no real calls and resets gracefully. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/diy/VideoConsultationComingSoon.tsx",
-          "operation": "create",
-          "description": "Implement the “Video consultation” Coming Soon option within DIY Support that opens a simulated multi-step flow using SimulatedFlowModal and ComingSoonBadge. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/diy/DIYSupportModal.tsx",
-          "operation": "modify",
-          "description": "Wire the VideoConsultationComingSoon option into the DIY Support modal navigation/sections; ensure no backend calls are made for this feature. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-17",
-      "summary": "Add identity verification submission UI with document upload + status display and admin review UI, gated for admins.",
-      "acceptanceCriteria": [
-        "Authenticated users can upload identity verification documents and see their verification status (e.g., Not submitted / Pending / Verified / Rejected).",
-        "Admin can view a verification queue/panel and set user verification status to approved/rejected with an optional note.",
-        "Verification status is persisted in backend state and visible after reload.",
-        "Non-admin users cannot access admin verification actions."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/trust-safety/IdentityVerification.tsx",
-          "operation": "create",
-          "description": "Create a customer-facing identity verification page with document upload UI (using existing FileUploader) and a status panel; gate to authenticated users using authorization component patterns and show sign-in prompt for guests. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/admin/VerificationQueue.tsx",
-          "operation": "create",
-          "description": "Create an admin-only verification queue/detail page UI for reviewing submissions and setting status with an optional note; use existing admin gating patterns (isCallerAdmin + redirect to AccessDenied). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add placeholder React Query hooks for identity verification submission/status/review that can be wired to backend capabilities when available; ensure UI handles missing capabilities gracefully (show descriptive error and avoid crashes). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register routes for the identity verification page and the admin verification queue page, ensuring admin-only route is not accessible to non-admins (redirect to /access-denied). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/dashboards/AdminDashboard.tsx",
-          "operation": "modify",
-          "description": "Add navigation tile/link to the new Verification admin panel page. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-18",
-      "summary": "Add insurance upload workflow UI for mechanics and garage owners with status visible to users and admins, using existing upload patterns.",
-      "acceptanceCriteria": [
-        "Mechanics and garage owners can upload an insurance document and see its current status.",
-        "Admin can view uploaded insurance documents (or references) and mark them approved/rejected.",
-        "The workflow uses the existing file/media upload handling patterns and persists results in backend state."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/mechanics/MechanicProfileEditor.tsx",
-          "operation": "modify",
-          "description": "Enhance the existing insurance upload area to also display an insurance verification status (if present in loaded profile data) and clearer guidance text; continue using existing FileUploader patterns. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/garages/GarageListingEditor.tsx",
-          "operation": "modify",
-          "description": "Add a garage-owner insurance upload section to the listing editor (or a clearly labeled ‘Owner documents’ section) using FileUploader and blob-storage ExternalBlob patterns; display current status if available. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/admin/InsuranceReview.tsx",
-          "operation": "create",
-          "description": "Create an admin-only insurance review page for mechanics/garage owners that lists submitted insurance document references and allows approve/reject. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add/extend hooks required for garage-owner insurance upload and admin insurance review; if backend capabilities are not yet available, ensure UI fails gracefully with clear error messaging. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register the admin insurance review route and ensure it is gated by admin checks consistent with existing admin pages. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/dashboards/AdminDashboard.tsx",
-          "operation": "modify",
-          "description": "Add navigation tile/link to the new Insurance review page. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-19",
-      "summary": "Add waiver viewing + digital signing UI during garage booking when waiverRequired=true and persist/display signed record in booking details/admin tools.",
-      "acceptanceCriteria": [
-        "Garage rental flows that require a waiver present a waiver text and signature/acceptance UI before completion.",
-        "A signed waiver record (signer, timestamp, acceptance) is persisted and can be displayed later for the customer and admin.",
-        "If a garage listing has waiverRequired=true, the UI enforces signing before confirming booking actions tied to that flow."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/waivers/WaiverSigningModal.tsx",
-          "operation": "create",
-          "description": "Create a waiver modal with waiver text display, typed name + checkbox acceptance, and captured timestamp; enforce completion before allowing booking confirmation in the UI. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/booking/GarageBookingModal.tsx",
-          "operation": "modify",
-          "description": "If the selected garage has waiverRequired=true, enforce waiver signing via WaiverSigningModal before enabling final confirmation actions; store signed state in UI and prepare for persistence when backend capability is available. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/admin/WaiverRecords.tsx",
-          "operation": "create",
-          "description": "Create an admin-only UI page to view signed waiver records associated with bookings (read-only list/detail UI), gated by admin checks. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add placeholder hooks for waiver record create/fetch/list that can be wired to backend capabilities when available; ensure UI does not crash if capability is unavailable. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register admin route for waiver record viewing and gate it with existing admin patterns. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-20",
-      "summary": "Add dispute resolution ticketing UI: create disputes tied to booking/listing, show comment timeline/status, and admin resolution tools (non-real-time).",
-      "acceptanceCriteria": [
-        "Users can create a dispute with category, description, and optional attachment reference, and see it in their dashboard.",
-        "Dispute tickets have statuses (e.g., Open/Under Review/Resolved/Closed) and a timeline of updates stored in backend state.",
-        "Admin dashboard includes a dispute tools page to review disputes, change status, and add a resolution note.",
-        "No real-time messaging is implemented; updates appear on refresh/refetch."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/disputes/Disputes.tsx",
-          "operation": "create",
-          "description": "Create a user disputes page with a ‘New dispute’ form (category, description, optional attachment reference using FileUploader patterns) and a list/detail view with status + timeline rendered from fetched updates (refresh-based only). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/admin/DisputeTools.tsx",
-          "operation": "create",
-          "description": "Create an admin-only dispute tools page to review disputes, change status, and add a resolution note; ensure no real-time functionality is implied. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/dashboards/CustomerDashboard.tsx",
-          "operation": "modify",
-          "description": "Add a ‘Disputes’ section linking to the disputes page and optionally showing recent disputes (refresh-based). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add placeholder hooks for dispute creation, listing, status updates, and admin resolution actions; ensure UI handles unavailable backend capability gracefully. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register routes for the user disputes page and the admin dispute tools page; gate admin page. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/dashboards/AdminDashboard.tsx",
-          "operation": "modify",
-          "description": "Add navigation tile/link to the Dispute tools page. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-21",
-      "summary": "Add Coming Soon simulated UX for in-app messaging, push notifications, real-time tracking, and escrow, with consistent labeling and no backend calls.",
-      "acceptanceCriteria": [
-        "Any UI entry points added for messaging, push notifications, real-time tracking, or escrow show “Coming Soon” badges/labels.",
-        "Clicking these entry points shows simulated screens only, and no backend calls are required for unsupported features.",
-        "Existing “Map view coming soon” in Garage Browse remains consistent with this Coming Soon pattern."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/coming-soon/UnsupportedFeaturesHub.tsx",
-          "operation": "create",
-          "description": "Create a single consolidated page for simulated UX entry points (Messaging, Notifications, Tracking, Escrow) to avoid scattering new top-level routes; each option opens a SimulatedFlowModal and uses ComingSoonBadge, with no backend calls. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/layout/TopNav.tsx",
-          "operation": "modify",
-          "description": "Add a navigation entry (e.g., within authenticated user menu or primary nav) to the UnsupportedFeaturesHub, clearly labeled Coming Soon. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/garages/GarageBrowse.tsx",
-          "operation": "modify",
-          "description": "Update the existing ‘Map view coming soon’ placeholder to use the shared ComingSoonBadge/Coming Soon pattern for consistency. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register a route for the UnsupportedFeaturesHub page and wire it into navigation. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-22",
-      "summary": "Add admin revenue tracking view UI to display totals/breakdowns computed by backend fee settings and booking summaries.",
-      "acceptanceCriteria": [
-        "Backend supports configurable fee rates within the specified ranges and persists the selected configuration.",
-        "For applicable bookings/rentals, the system computes platform fee amounts and stores them as part of a revenue record or booking summary.",
-        "Admin dashboard includes a revenue tracking page showing totals and basic breakdowns (e.g., by type, date range if available).",
-        "Fee calculations are testable and consistent across reloads."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/admin/RevenueTracking.tsx",
-          "operation": "create",
-          "description": "Create an admin-only revenue tracking page UI showing totals and basic breakdowns (by type; optional date filters if supported by available data) and a configuration panel UI for fee rates within the specified ranges. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add placeholder hooks for revenue totals/breakdowns and fee configuration read/write, designed to call backend capabilities when available; ensure the page renders with clear ‘data unavailable’ states rather than crashing. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/dashboards/AdminDashboard.tsx",
-          "operation": "modify",
-          "description": "Add navigation tile/link to the Revenue tracking page. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register the admin revenue tracking route and apply admin gating consistent with existing admin pages. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-23",
-      "summary": "Add featured mechanic boost UI state: mechanic can request/enable, admin can approve/enable, and browse reflects featured badge/sorting priority.",
-      "acceptanceCriteria": [
-        "Mechanic dashboard allows requesting/enabling a “Featured boost” state (with clear note that payment is not processed in-app).",
-        "Admin can approve/enable/disable featured status for a mechanic.",
-        "Mechanic cards/public profile show a “Featured” badge when enabled.",
-        "Mechanic browse results can optionally prioritize featured mechanics (e.g., top of list) without breaking existing filtering."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/dashboards/MechanicDashboard.tsx",
-          "operation": "modify",
-          "description": "Add a ‘Featured boost’ card/section allowing mechanics to request/enable the boost with clear note that payment is not processed in-app; wire to backend capability when available and show status in UI. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/admin/FeaturedBoostManagement.tsx",
-          "operation": "create",
-          "description": "Create an admin-only page to review and enable/disable featured boost for mechanics, gated by admin checks. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/mechanics/MechanicCard.tsx",
-          "operation": "modify",
-          "description": "Add a visible ‘Featured’ badge on mechanic cards when the mechanic is featured (based on available mechanic data), using existing badge components and ComingSoonBadge only if the data is not yet supported. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/mechanics/MechanicBrowse.tsx",
-          "operation": "modify",
-          "description": "Add optional client-side prioritization of featured mechanics at top of results without breaking existing filtering/sorting; ensure stable rendering and selection states. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add placeholder hooks for requesting featured boost and admin approval/enable/disable; ensure UI handles missing backend capability gracefully. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register the admin featured boost management route and link it from admin dashboard navigation. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/dashboards/AdminDashboard.tsx",
-          "operation": "modify",
-          "description": "Add navigation tile/link to Featured boost management. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-24",
-      "summary": "Add emergency service surge pricing UI controls for mechanics and show adjusted pricing in customer quote/booking views.",
-      "acceptanceCriteria": [
-        "Mechanic dashboard includes a toggle for “Emergency service” and a configurable surge setting.",
-        "Customer-facing booking/quote UI shows base rate and emergency-adjusted rate when emergency is chosen.",
-        "Backend persists emergency settings and computes adjusted pricing consistently."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/dashboards/MechanicDashboard.tsx",
-          "operation": "modify",
-          "description": "Add an ‘Emergency service’ toggle and surge configuration UI (bounded inputs) to mechanic dashboard; clearly show it affects customer pricing when selected. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/booking/MechanicEmergencyPricingToggle.tsx",
-          "operation": "create",
-          "description": "Create a customer-facing emergency selection UI element (toggle/checkbox) used in quote/booking contexts to display base and adjusted pricing breakdown. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/booking/GarageBookingModal.tsx",
-          "operation": "modify",
-          "description": "If mechanic assistance/quote options are presented, include emergency selection and pricing breakdown UI; ensure the adjusted pricing display is consistent and clearly labeled. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add placeholder hooks for saving/loading mechanic emergency settings and fetching computed adjusted prices where supported; fallback to UI-only preview if backend capability is unavailable, without crashing. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-25",
-      "summary": "Add membership management UI for mechanic pro membership and customer DIY membership and reflect membership discounts in garage rental pricing breakdown.",
-      "acceptanceCriteria": [
-        "Users can see and manage membership status in an appropriate dashboard/settings area.",
-        "Membership state persists in backend and affects UI (e.g., discount line item) where relevant.",
-        "Garage rental pricing breakdown shows a discount when DIY membership is active."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/settings/MembershipSettings.tsx",
-          "operation": "create",
-          "description": "Create a membership settings page allowing customers to activate/deactivate DIY membership and mechanics to manage pro membership state; clearly state that external billing is not processed. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/booking/PricingBreakdown.tsx",
-          "operation": "create",
-          "description": "Create a reusable pricing breakdown component that can show base price, membership discount line item (when active), assistance add-ons, and total. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/booking/GarageBookingModal.tsx",
-          "operation": "modify",
-          "description": "Use PricingBreakdown to show garage rental pricing and include a membership discount line item when DIY membership is active; ensure the discount is clearly shown. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/layout/TopNav.tsx",
-          "operation": "modify",
-          "description": "Add an authenticated navigation entry to Membership settings (e.g., within the user dropdown). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add placeholder hooks for reading/updating membership state from backend capabilities when available; ensure settings page has a safe fallback state if unavailable. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register the Membership settings route and ensure it is accessible only to authenticated users (show sign-in prompt otherwise). Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-26",
-      "summary": "Enhance admin dashboard with navigation and pages for verification, waitlist management, and demand heatmap (location-string aggregation), all admin-gated.",
-      "acceptanceCriteria": [
-        "Admin dashboard includes navigation to Verification, Waitlist, and Demand (heatmap) pages.",
-        "Waitlist management supports adding/removing entries and tracking status (e.g., pending/invited/converted).",
-        "Demand view displays aggregated counts by location string (e.g., city/region entered) and updates as new events are recorded.",
-        "All admin pages are gated by admin checks and deny non-admin access."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/admin/AdminRouteGuard.tsx",
-          "operation": "create",
-          "description": "Create a reusable admin-only wrapper that uses the authorization component patterns (isCallerAdmin) to gate content and redirect to /access-denied when unauthorized. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/admin/WaitlistManagement.tsx",
-          "operation": "create",
-          "description": "Create an admin-only waitlist management page UI (add/remove entries, update status pending/invited/converted) using refresh-based updates only. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/admin/DemandHeatmap.tsx",
-          "operation": "create",
-          "description": "Create an admin-only demand ‘heatmap’ page that displays aggregated counts by location string using a simple table/bar visualization (no external maps). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/dashboards/AdminDashboard.tsx",
-          "operation": "modify",
-          "description": "Add navigation tiles/links to Verification, Waitlist, and Demand pages. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add placeholder hooks for waitlist CRUD and demand aggregation retrieval/refresh; ensure admin pages degrade gracefully if backend capabilities are unavailable. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register admin routes for Waitlist and Demand pages and wrap them with AdminRouteGuard for consistent gating. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-27",
-      "summary": "Add mobile-first “Fix My Car” CTA and intake flow with media upload, simulated AI pre-diagnosis labeled Coming Soon, and results linking to estimated cost/mechanics/garages.",
-      "acceptanceCriteria": [
-        "A “Fix My Car” CTA is visible and thumb-friendly on mobile layouts (e.g., landing and/or customer dashboard).",
-        "The intake flow supports uploading media using the existing upload UI patterns and completes without errors.",
-        "Results screen shows estimated cost (from the estimator feature) and links/sections for mechanics and garages.",
-        "AI pre-diagnosis is clearly labeled “Coming Soon” and uses simulated UI only."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/fix-my-car/FixMyCarIntake.tsx",
-          "operation": "create",
-          "description": "Create a mobile-first intake page/flow that collects issue description and media upload (photo/video) using the existing FileUploader patterns and blob-storage ExternalBlob conversions where needed; include simulated AI pre-diagnosis section labeled Coming Soon. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/fix-my-car/FixMyCarResults.tsx",
-          "operation": "create",
-          "description": "Create a results page that shows an estimated cost summary (wired to the estimator feature where available) and sections linking to nearby mechanics and nearby rental bays (reuse existing browse routes and filter prefill patterns where applicable). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/Landing.tsx",
-          "operation": "modify",
-          "description": "Add a thumb-friendly “Fix My Car” CTA on mobile layouts that routes into the Fix My Car intake flow. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/dashboards/CustomerDashboard.tsx",
-          "operation": "modify",
-          "description": "Add a prominent mobile-first “Fix My Car” CTA on the customer dashboard that routes into the intake flow. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register routes for Fix My Car intake and results pages and ensure navigation between them is wired. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-28",
-      "summary": "Add desktop browse enhancements: mechanic compare (up to N), advanced filter panel layout, and map+list split-screen mode with Coming Soon simulated map.",
-      "acceptanceCriteria": [
-        "Mechanic browse supports selecting multiple mechanics and viewing a comparison layout with key fields (rate, rating, specialization, verification).",
-        "On desktop widths, filters render in an “advanced panel” layout without breaking existing filter functionality.",
-        "A split-screen mode can be toggled; map portions that are not implemented display consistent Coming Soon messaging."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/mechanics/MechanicCompareTray.tsx",
-          "operation": "create",
-          "description": "Create a compare tray/panel that shows selected mechanics (up to N), allows removal/clear, and opens a side-by-side comparison view with key fields. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/mechanics/MechanicCompareView.tsx",
-          "operation": "create",
-          "description": "Create the side-by-side comparison layout for selected mechanics (rate, rating, specialization, verification) optimized for desktop widths. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/mechanics/MechanicBrowse.tsx",
-          "operation": "modify",
-          "description": "Add mechanic selection checkboxes/actions on cards, maintain selected state up to N, and wire compare tray/view; add a toggle for split-screen map+list mode with map area showing Coming Soon messaging consistently. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/mechanics/MechanicFilters.tsx",
-          "operation": "modify",
-          "description": "Adjust layout to render as an ‘advanced panel’ on desktop widths (layout-only changes) while preserving existing filter behavior and callbacks. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/garages/GarageBrowse.tsx",
-          "operation": "modify",
-          "description": "Add a split-screen mode toggle for garages (list + simulated map panel) while keeping current list/map tabs working; ensure map panel uses Coming Soon patterns. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-29",
-      "summary": "Add Coming Soon labeling and simulated UX for Apple Pay / Google Pay payment options in booking/checkout UI.",
-      "acceptanceCriteria": [
-        "Any payment method UI that references Apple Pay/Google Pay is labeled “Coming Soon”.",
-        "Selecting these methods shows a simulated flow only and does not attempt payment processing."
+        "PaymentMethodSelector no longer shows Apple Pay / Google Pay Coming Soon options or simulated modals, and does not show simulated “future payment processing” text.",
+        "GarageBookingModal confirm flow is wired end-to-end: user action triggers backend payment/booking mutations, updates persisted state, and updates UI based on responses (no “(Simulated)” toasts).",
+        "UI displays “Test Mode – Internal Ledger Active” wherever the user is confirming payment/escrow for a booking."
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/payments/PaymentMethodSelector.tsx",
-          "operation": "create",
-          "description": "Create a payment method selector UI that includes Apple Pay and Google Pay options clearly labeled Coming Soon; selecting them opens a simulated flow with no payment processing. Verify the component's usage instructions before implementing."
+          "operation": "modify",
+          "description": "Remove Apple Pay/Google Pay options, ComingSoonBadge, and SimulatedFlowModal usage; present a single internal-ledger method with explicit “Test Mode – Internal Ledger Active” labeling and no card-entry simulation."
         },
         {
           "path": "frontend/src/components/booking/GarageBookingModal.tsx",
           "operation": "modify",
-          "description": "Add a payment step/section using PaymentMethodSelector; ensure Apple Pay/Google Pay selections are simulated only and do not trigger backend calls. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-30",
-      "summary": "Add no-show penalty UI surfaces: mark eligible booking/rental as no-show (authorized), show penalties in user dashboards, and admin reporting views.",
-      "acceptanceCriteria": [
-        "Authorized users/admin can mark an eligible booking/rental as a no-show with a reason.",
-        "Backend creates a penalty record and associates it with the user and the booking/rental.",
-        "User dashboards display no-show penalties (count and recent entries).",
-        "Admin view can list/filter users with penalties."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/admin/NoShowPenalties.tsx",
-          "operation": "create",
-          "description": "Create an admin-only penalties page UI to list/filter users with no-show penalties and inspect recent entries; gate with admin checks. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/dashboards/CustomerDashboard.tsx",
-          "operation": "modify",
-          "description": "Add a ‘No-show penalties’ summary section (count + recent entries) for the authenticated user; refresh-based only. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/dashboards/MechanicDashboard.tsx",
-          "operation": "modify",
-          "description": "Add a ‘No-show penalties’ summary section (count + recent entries) where applicable for mechanics; refresh-based only. Verify the component's usage instructions before implementing."
+          "description": "Replace the simulated confirm flow with a real backend mutation sequence for booking + internal-ledger escrow hold; show “Test Mode – Internal Ledger Active” on the payment tab; display success/error toasts based on actual backend results and close/refresh UI accordingly."
         },
         {
           "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Add placeholder hooks for marking a booking/rental as no-show and fetching penalties for caller/admin reporting; ensure UI handles unavailable backend capability without crashing. Verify the component's usage instructions before implementing."
+          "description": "Add React Query hooks for internal-ledger booking payment mutations and any required payment-status queries used by GarageBookingModal; ensure mutations invalidate/refetch relevant cached queries to reflect persisted state changes."
         },
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/backend.d.ts",
           "operation": "modify",
-          "description": "Register admin route for no-show penalties reporting and link it from admin dashboard navigation. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/dashboards/AdminDashboard.tsx",
-          "operation": "modify",
-          "description": "Add navigation tile/link to the No-show penalties admin page. Verify the component's usage instructions before implementing."
+          "description": "Extend the frontend backend interface typings with the internal-ledger payment/booking functions and payment status/transaction query types required by the booking flow UI."
         }
       ]
     },
     {
-      "id": "REQ-31",
-      "summary": "Add a desktop simulated drag-and-drop calendar booking UX labeled Coming Soon, without breaking existing availability/booking views.",
+      "id": "REQ-39",
+      "summary": "Add user-visible transaction history and per-booking payment status surfaces powered by backend queries.",
       "acceptanceCriteria": [
-        "On desktop, a calendar UI demonstrates drag-and-drop booking interactions.",
-        "If the action is not persisted, the UI clearly labels the feature as “Coming Soon” and resets gracefully.",
-        "Existing booking/availability pages remain functional and stable."
+        "Signed-in users can view payment status for their bookings (Held/Released/Refunded/Disputed) in an appropriate dashboard section.",
+        "Users can view a transaction history list (at minimum: booking reference, amount, status, timestamps).",
+        "All displayed payment data comes from backend queries (no hardcoded placeholder rows)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/calendar/SimulatedDragDropCalendar.tsx",
+          "path": "frontend/src/pages/payments/TransactionHistory.tsx",
           "operation": "create",
-          "description": "Create a desktop-focused simulated calendar component demonstrating drag-and-drop interactions; label clearly as Coming Soon if actions are not persisted and ensure it resets gracefully after interaction. Verify the component's usage instructions before implementing."
+          "description": "Create a signed-in user transaction history page that loads transactions via backend queries and renders booking reference, amount, status, and timestamps."
         },
         {
-          "path": "frontend/src/pages/dashboards/MechanicDashboard.tsx",
-          "operation": "modify",
-          "description": "Enhance the Availability section to render SimulatedDragDropCalendar on desktop widths while keeping existing dashboard stable and functional. Verify the component's usage instructions before implementing."
+          "path": "frontend/src/components/payments/TransactionHistoryList.tsx",
+          "operation": "create",
+          "description": "Create a reusable list component for rendering transaction rows with status indicators and timestamps, driven entirely by queried backend data."
         },
         {
-          "path": "frontend/src/pages/dashboards/GarageOwnerDashboard.tsx",
+          "path": "frontend/src/components/payments/TransactionStatusBadge.tsx",
+          "operation": "create",
+          "description": "Create a small status badge component to map internal-ledger transaction states (Pending/Held/Released/Refunded/Disputed) into consistent UI indicators."
+        },
+        {
+          "path": "frontend/src/pages/dashboards/CustomerDashboard.tsx",
           "operation": "modify",
-          "description": "Enhance the Availability section to render SimulatedDragDropCalendar on desktop widths while keeping existing dashboard stable and functional. Verify the component's usage instructions before implementing."
+          "description": "Add a dashboard section that shows the user’s recent transaction(s) and/or booking payment status using backend-powered query hooks, with a link into the full transaction history page."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add React Query hooks to fetch the signed-in user’s transaction history and any per-booking payment status needed by dashboard surfaces."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Register routes for the new user transaction history page and ensure it is reachable via navigation (no orphan page)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-40",
+      "summary": "Add admin UI to list transactions and perform escrow actions (Release/Refund) with authorization handling and state refresh.",
+      "acceptanceCriteria": [
+        "An admin-facing view lists transactions with filters/status indicators and provides action buttons for Release/Refund where valid.",
+        "Attempting admin actions as a non-admin results in an access denied UI path (and backend denies).",
+        "After admin action succeeds, affected booking/payment UI updates (React Query invalidation/refetch) without requiring a hard reload."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/admin/EscrowTransactions.tsx",
+          "operation": "create",
+          "description": "Create an admin-only transactions page that lists escrow transactions (with basic status filtering) and shows Release/Refund actions only when valid for the current status; handle unauthorized errors with an access denied UI path."
+        },
+        {
+          "path": "frontend/src/pages/dashboards/AdminDashboard.tsx",
+          "operation": "modify",
+          "description": "Add a new Admin Dashboard tool card that links to the escrow transactions admin page."
+        },
+        {
+          "path": "frontend/src/components/admin/AdminRouteGuard.tsx",
+          "operation": "modify",
+          "description": "Ensure admin route guarding handles backend Unauthorized failures gracefully and routes to AccessDenied when the admin-check fails. Use the selected 'authorization' component’s admin-check capability pattern; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add React Query hooks for admin transaction listing and admin escrow actions (Release Funds / Issue Refund), including query invalidation/refetch so state refresh happens without hard reload."
+        },
+        {
+          "path": "frontend/src/backend.d.ts",
+          "operation": "modify",
+          "description": "Extend the frontend backend interface typings with admin escrow transaction query/action functions and any required types."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Register the new admin escrow transactions route and wrap it with AdminRouteGuard so it cannot be accessed by non-admin users."
+        },
+        {
+          "path": "frontend/src/components/layout/TopNav.tsx",
+          "operation": "modify",
+          "description": "Add an admin-only navigation entry to the escrow transactions page within the Admin section. Use the selected 'authorization' component’s admin-check capability pattern already present via isCallerAdmin; verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-41",
+      "summary": "Implement frontend notification center capabilities: fetch notifications/unread count and mark notifications as read, integrating with in-app UI surfaces.",
+      "acceptanceCriteria": [
+        "Backend persists notifications per user (read/unread state, created timestamp, type, reference id).",
+        "Backend emits notifications on relevant events (at minimum: booking creation/confirmation, funds release, dispute opened, account suspension).",
+        "Frontend can fetch notifications list and unread count and mark notifications as read."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useNotifications.ts",
+          "operation": "create",
+          "description": "Create dedicated React Query hooks for notifications: fetch unread count, fetch recent list, fetch full list, mark one as read, and bulk mark as read."
+        },
+        {
+          "path": "frontend/src/backend.d.ts",
+          "operation": "modify",
+          "description": "Extend the frontend backend interface typings with notification types (BookingCreated, BookingConfirmed, FundsReleased, DisputeOpened, AccountSuspended) and notification query/mutation functions used by the frontend."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "If needed for consistency, re-export or bridge notification hooks and ensure any existing flows that should refresh notifications invalidate/refetch the notification queries after successful mutations."
+        }
+      ]
+    },
+    {
+      "id": "REQ-42",
+      "summary": "Add a notification badge counter and dropdown in TopNav that shows recent notifications and supports marking as read.",
+      "acceptanceCriteria": [
+        "TopNav shows an unread badge count when unread notifications exist.",
+        "Dropdown lists recent notifications with type + timestamp and links to the referenced entity when applicable.",
+        "Marking a notification as read updates the unread count and the item’s read state."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/notifications/NotificationDropdown.tsx",
+          "operation": "create",
+          "description": "Create a TopNav-ready notification dropdown component that displays unread badge count, recent notifications, and supports marking items as read while keeping UI in sync via React Query."
+        },
+        {
+          "path": "frontend/src/components/layout/TopNav.tsx",
+          "operation": "modify",
+          "description": "Integrate the notification dropdown + badge into the top navigation and wire links to referenced entities (when applicable) and to the full Notification Center page."
+        }
+      ]
+    },
+    {
+      "id": "REQ-43",
+      "summary": "Add a Notification Center dashboard page with filtering and bulk mark-as-read, and ensure navigation is role-appropriate.",
+      "acceptanceCriteria": [
+        "A dedicated page exists for viewing all notifications for the signed-in user.",
+        "Page supports toggling between Unread and All (or equivalent) and bulk mark-as-read.",
+        "Page is accessible via role-appropriate navigation without exposing admin-only routes to non-admins."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/notifications/NotificationCenter.tsx",
+          "operation": "create",
+          "description": "Create a Notification Center page that lists all notifications, supports Unread/All filtering, and provides a bulk “Mark all as read” action using backend-driven mutations and query refresh."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Register the Notification Center route and ensure it renders under the standard layout."
+        },
+        {
+          "path": "frontend/src/components/layout/TopNav.tsx",
+          "operation": "modify",
+          "description": "Add a non-admin navigation path to Notification Center (e.g., in the user dropdown and/or via notification dropdown) without exposing admin-only routes to non-admin users."
+        }
+      ]
+    },
+    {
+      "id": "REQ-44",
+      "summary": "Implement toast alerts for notification-worthy events using real backend mutations and query refresh (no simulated flows).",
+      "acceptanceCriteria": [
+        "Key user actions (booking confirmed, dispute opened, funds released) show success/error toasts that reflect actual backend results.",
+        "Toast messaging does not contain “Simulated” or “Coming Soon”.",
+        "UI state after toasts matches backend state (e.g., booking status/payment status updated)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/booking/GarageBookingModal.tsx",
+          "operation": "modify",
+          "description": "Ensure booking confirmation/payment hold uses real backend mutations and emits success/error toasts that reflect actual results, followed by React Query invalidation/refetch so UI matches backend state."
+        },
+        {
+          "path": "frontend/src/pages/admin/EscrowTransactions.tsx",
+          "operation": "modify",
+          "description": "Show success/error toasts for Release/Refund actions driven by real backend mutations, and invalidate/refetch both admin transaction lists and any related user-facing payment queries."
+        },
+        {
+          "path": "frontend/src/pages/disputes/Disputes.tsx",
+          "operation": "modify",
+          "description": "Add a real dispute-open mutation UI (minimal form) that triggers backend processing and shows success/error toasts; refresh the disputes list and notifications queries after mutation."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Remove placeholder dispute hooks for this scope and replace them with real actor-backed query/mutation hooks used by Disputes, including cache invalidation to keep UI consistent after toasts."
+        }
+      ]
+    },
+    {
+      "id": "REQ-45",
+      "summary": "Remove/refactor payments and notifications “Coming Soon” and simulated flows so user-facing copy contains no “Coming Soon”/“Simulated” in these scopes.",
+      "acceptanceCriteria": [
+        "PaymentMethodSelector does not import/use ComingSoonBadge or SimulatedFlowModal.",
+        "Any UI entry point that previously advertised “Escrow Payment” as Coming Soon is removed or updated to reflect the functional internal ledger escrow.",
+        "No user-facing copy within the payments/notifications flow uses “Coming Soon” or “Simulated”."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/payments/PaymentMethodSelector.tsx",
+          "operation": "modify",
+          "description": "Delete ComingSoonBadge and SimulatedFlowModal imports/usage; remove Apple Pay/Google Pay options and remove any “future payment processing” placeholder copy from the payments flow."
+        },
+        {
+          "path": "frontend/src/components/booking/GarageBookingModal.tsx",
+          "operation": "modify",
+          "description": "Remove/replace any payment-flow copy that says “coming soon” or “(Simulated)”, and ensure confirm produces real backend-driven state changes and toasts."
+        },
+        {
+          "path": "frontend/src/pages/coming-soon/UnsupportedFeaturesHub.tsx",
+          "operation": "modify",
+          "description": "Remove the “Escrow Payment” and “Push Notifications” cards (and any associated simulated previews) so escrow/notifications are no longer presented as Coming Soon; update page copy/title to avoid “Coming Soon” phrasing for these scopes."
+        },
+        {
+          "path": "frontend/src/components/layout/TopNav.tsx",
+          "operation": "modify",
+          "description": "Remove or rename the “Coming Soon Features” navigation entry to avoid advertising escrow/notifications as coming soon; ensure no payments/notifications navigation path points to a simulated preview."
         }
       ]
     }

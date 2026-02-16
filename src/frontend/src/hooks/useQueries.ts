@@ -7,6 +7,19 @@ import type {
   EstimateStatus,
   UserProfile,
 } from '../backend';
+import type {
+  Transaction,
+  Booking,
+  BookingType,
+  GarageListing,
+  MechanicProfile,
+  MechanicSearchFilter,
+  GarageSearchFilter,
+  RevenueData,
+  FeeConfiguration,
+  MembershipStatus,
+} from '../lib/types';
+import { Principal } from '@dfinity/principal';
 
 export function useGetCallerUserProfile() {
   const { actor, isFetching: actorFetching } = useActor();
@@ -197,6 +210,8 @@ export function useCreateAssistanceRequest() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['callerAssistanceRequests'] });
       queryClient.invalidateQueries({ queryKey: ['allAssistanceRequests'] });
+      queryClient.invalidateQueries({ queryKey: ['callerNotifications'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadNotificationCount'] });
     },
   });
 }
@@ -240,6 +255,159 @@ export function useUpdateAssistanceRequestStatus() {
       queryClient.invalidateQueries({ queryKey: ['callerAssistanceRequests'] });
       queryClient.invalidateQueries({ queryKey: ['allAssistanceRequests'] });
     },
+  });
+}
+
+// Internal Escrow Ledger - Transactions (backend not yet implemented)
+export function useGetCallerTransactions() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<Transaction[]>({
+    queryKey: ['callerTransactions'],
+    queryFn: async () => {
+      // Backend method not yet implemented - return empty array
+      return [];
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useGetAllTransactions() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<Transaction[]>({
+    queryKey: ['allTransactions'],
+    queryFn: async () => {
+      // Backend method not yet implemented - return empty array
+      return [];
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useReleaseFunds() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (transactionId: bigint) => {
+      // Backend method not yet implemented
+      console.log('Release funds (backend not implemented):', transactionId);
+      return Promise.resolve();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allTransactions'] });
+      queryClient.invalidateQueries({ queryKey: ['callerTransactions'] });
+      queryClient.invalidateQueries({ queryKey: ['callerBookings'] });
+      queryClient.invalidateQueries({ queryKey: ['callerNotifications'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadNotificationCount'] });
+    },
+  });
+}
+
+export function useRefundTransaction() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (transactionId: bigint) => {
+      // Backend method not yet implemented
+      console.log('Refund transaction (backend not implemented):', transactionId);
+      return Promise.resolve();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allTransactions'] });
+      queryClient.invalidateQueries({ queryKey: ['callerTransactions'] });
+      queryClient.invalidateQueries({ queryKey: ['callerBookings'] });
+      queryClient.invalidateQueries({ queryKey: ['callerNotifications'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadNotificationCount'] });
+    },
+  });
+}
+
+// Bookings (backend not yet implemented)
+export function useCreateBooking() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      bookingType,
+      mechanicId,
+      garageId,
+      scheduledStart,
+      scheduledEnd,
+      estimatedPrice,
+    }: {
+      bookingType: BookingType;
+      mechanicId: Principal | null;
+      garageId: bigint | null;
+      scheduledStart: bigint;
+      scheduledEnd: bigint;
+      estimatedPrice: bigint;
+    }) => {
+      // Backend method not yet implemented
+      console.log('Create booking (backend not implemented):', {
+        bookingType,
+        mechanicId,
+        garageId,
+        scheduledStart,
+        scheduledEnd,
+        estimatedPrice,
+      });
+      return Promise.resolve(BigInt(1)); // Return mock booking ID
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['callerBookings'] });
+      queryClient.invalidateQueries({ queryKey: ['callerTransactions'] });
+      queryClient.invalidateQueries({ queryKey: ['callerNotifications'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadNotificationCount'] });
+    },
+  });
+}
+
+export function useGetCallerBookings() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<Booking[]>({
+    queryKey: ['callerBookings'],
+    queryFn: async () => {
+      // Backend method not yet implemented - return empty array
+      return [];
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+// Disputes (backend not yet implemented)
+export function useCreateDispute() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ bookingId, reason }: { bookingId: bigint; reason: string }) => {
+      // Backend method not yet implemented
+      console.log('Create dispute (backend not implemented):', bookingId, reason);
+      return Promise.resolve(BigInt(1)); // Return mock dispute ID
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['callerDisputes'] });
+      queryClient.invalidateQueries({ queryKey: ['callerNotifications'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadNotificationCount'] });
+    },
+  });
+}
+
+export function useGetCallerDisputes() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery({
+    queryKey: ['callerDisputes'],
+    queryFn: async () => {
+      // Backend method not yet implemented - return empty array
+      return [];
+    },
+    enabled: !!actor && !isFetching,
   });
 }
 
@@ -319,269 +487,85 @@ export function useUpdateInsuranceStatus() {
   });
 }
 
-export function useGetWaiverRecords() {
-  return useQuery({
-    queryKey: ['waiverRecords'],
+// Placeholder hooks for marketplace features
+export function useSearchMechanics(filters?: MechanicSearchFilter) {
+  return useQuery<MechanicProfile[]>({
+    queryKey: ['mechanics', filters],
     queryFn: async () => {
-      // Placeholder - backend capability not yet available
+      // Backend not yet implemented
+      console.log('Search mechanics with filters:', filters);
       return [];
     },
   });
 }
 
-export function useCreateDispute() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({
-      bookingId,
-      category,
-      description,
-    }: {
-      bookingId: string;
-      category: string;
-      description: string;
-    }) => {
-      // Placeholder - backend capability not yet available
-      console.log('Dispute created:', bookingId, category, description);
-      return Promise.resolve();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['callerDisputes'] });
-    },
-  });
-}
-
-export function useGetCallerDisputes() {
-  return useQuery({
-    queryKey: ['callerDisputes'],
+export function useSearchGarages(filters?: GarageSearchFilter) {
+  return useQuery<GarageListing[]>({
+    queryKey: ['garages', filters],
     queryFn: async () => {
-      // Placeholder - backend capability not yet available
+      // Backend not yet implemented
+      console.log('Search garages with filters:', filters);
       return [];
     },
   });
 }
 
-export function useGetAllDisputes() {
-  return useQuery({
-    queryKey: ['allDisputes'],
+export function useGetGarage(garageId: string) {
+  return useQuery<GarageListing | null>({
+    queryKey: ['garage', garageId],
     queryFn: async () => {
-      // Placeholder - backend capability not yet available
-      return [];
-    },
-  });
-}
-
-export function useUpdateDisputeStatus() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({
-      disputeId,
-      status,
-      resolution,
-    }: {
-      disputeId: string;
-      status: string;
-      resolution?: string;
-    }) => {
-      // Placeholder - backend capability not yet available
-      console.log('Dispute status updated:', disputeId, status, resolution);
-      return Promise.resolve();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['allDisputes'] });
-      queryClient.invalidateQueries({ queryKey: ['callerDisputes'] });
-    },
-  });
-}
-
-export function useGetRevenueData() {
-  return useQuery({
-    queryKey: ['revenueData'],
-    queryFn: async () => {
-      // Placeholder - backend capability not yet available
-      return {
-        totalRevenue: 0,
-        mechanicCommissions: 0,
-        garageCommissions: 0,
-        featuredBoosts: 0,
-      };
-    },
-  });
-}
-
-export function useGetFeeConfiguration() {
-  return useQuery({
-    queryKey: ['feeConfiguration'],
-    queryFn: async () => {
-      // Placeholder - backend capability not yet available
-      return {
-        mechanicBookingCommission: 20,
-        garageRentalCommission: 15,
-        featuredBoostFee: 50,
-        emergencySurgeMultiplier: 1.5,
-      };
-    },
-  });
-}
-
-export function useUpdateFeeConfiguration() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (config: any) => {
-      // Placeholder - backend capability not yet available
-      console.log('Fee configuration updated:', config);
-      return Promise.resolve();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['feeConfiguration'] });
-    },
-  });
-}
-
-export function useGetMembershipStatus() {
-  return useQuery({
-    queryKey: ['membershipStatus'],
-    queryFn: async () => {
-      // Placeholder - backend capability not yet available
+      // Backend not yet implemented
+      console.log('Get garage:', garageId);
       return null;
     },
   });
 }
 
-export function useUpdateMembershipStatus() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({ type, active }: { type: string; active: boolean }) => {
-      // Placeholder - backend capability not yet available
-      console.log('Membership status updated:', type, active);
-      return Promise.resolve();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['membershipStatus'] });
-    },
-  });
-}
-
-export function useGetWaitlist() {
-  return useQuery({
-    queryKey: ['waitlist'],
-    queryFn: async () => {
-      // Placeholder - backend capability not yet available
-      return [];
-    },
-  });
-}
-
-export function useAddToWaitlist() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({ email, location }: { email: string; location: string }) => {
-      // Placeholder - backend capability not yet available
-      console.log('Added to waitlist:', email, location);
-      return Promise.resolve();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['waitlist'] });
-    },
-  });
-}
-
-export function useUpdateWaitlistStatus() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      // Placeholder - backend capability not yet available
-      console.log('Waitlist status updated:', id, status);
-      return Promise.resolve();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['waitlist'] });
-    },
-  });
-}
-
-export function useGetDemandData() {
-  return useQuery({
-    queryKey: ['demandData'],
-    queryFn: async () => {
-      // Placeholder - backend capability not yet available
-      return [];
-    },
-  });
-}
-
-export function useGetNoShowPenalties() {
-  return useQuery({
-    queryKey: ['noShowPenalties'],
-    queryFn: async () => {
-      // Placeholder - backend capability not yet available
-      return [];
-    },
-  });
-}
-
-export function useMarkNoShow() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({ bookingId, reason }: { bookingId: string; reason: string }) => {
-      // Placeholder - backend capability not yet available
-      console.log('Marked as no-show:', bookingId, reason);
-      return Promise.resolve();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['noShowPenalties'] });
-    },
-  });
-}
-
-// Existing hooks (keeping for compatibility)
 export function useGetMechanicsByOwner() {
-  return useQuery({
+  return useQuery<MechanicProfile[]>({
     queryKey: ['mechanicsByOwner'],
     queryFn: async () => {
-      return [];
-    },
-  });
-}
-
-export function useSearchMechanics(filters: any) {
-  return useQuery({
-    queryKey: ['mechanics', filters],
-    queryFn: async () => {
+      // Backend not yet implemented
       return [];
     },
   });
 }
 
 export function useGetGaragesByOwner() {
-  return useQuery({
+  return useQuery<GarageListing[]>({
     queryKey: ['garagesByOwner'],
     queryFn: async () => {
+      // Backend not yet implemented
       return [];
     },
   });
 }
 
-export function useSearchGarages(filters: any) {
-  return useQuery({
-    queryKey: ['garages', filters],
+export function useGetMembershipStatus() {
+  return useQuery<MembershipStatus | null>({
+    queryKey: ['membershipStatus'],
     queryFn: async () => {
-      return [];
+      // Backend not yet implemented
+      return null;
     },
   });
 }
 
-export function useGetGarage(id: bigint) {
-  return useQuery({
-    queryKey: ['garage', id.toString()],
+export function useGetRevenueData() {
+  return useQuery<RevenueData | null>({
+    queryKey: ['revenueData'],
     queryFn: async () => {
+      // Backend not yet implemented
+      return null;
+    },
+  });
+}
+
+export function useGetFeeConfiguration() {
+  return useQuery<FeeConfiguration | null>({
+    queryKey: ['feeConfiguration'],
+    queryFn: async () => {
+      // Backend not yet implemented
       return null;
     },
   });

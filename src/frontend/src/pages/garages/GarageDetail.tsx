@@ -1,28 +1,29 @@
-import { useParams, Link } from '@tanstack/react-router';
+import { useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useGetGarage } from '../../hooks/useQueries';
 import PageLayout from '../../components/layout/PageLayout';
 import { PageTitle } from '../../components/common/Typography';
-import GaragePhotoGallery from '../../components/garages/GaragePhotoGallery';
-import ReviewList from '../../components/reviews/ReviewList';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { MapPin, Clock, DollarSign, Wrench, Shield, FileText } from 'lucide-react';
 import GarageBookingModal from '../../components/booking/GarageBookingModal';
 import DIYSupportModal from '../../components/diy/DIYSupportModal';
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { MapPin, DollarSign, Shield, FileText, Wrench } from 'lucide-react';
 
 export default function GarageDetail() {
   const { garageId } = useParams({ from: '/garages/$garageId' });
-  const { data: garage, isLoading } = useGetGarage(BigInt(garageId));
+  const { data: garage, isLoading } = useGetGarage(garageId);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
-  const [diyModalOpen, setDiyModalOpen] = useState(false);
+  const [diySupportModalOpen, setDIYSupportModalOpen] = useState(false);
 
   if (isLoading) {
     return (
       <PageLayout>
-        <Skeleton className="h-96" />
+        <div className="space-y-6">
+          <Skeleton className="h-12 w-64" />
+          <Skeleton className="h-96 w-full" />
+        </div>
       </PageLayout>
     );
   }
@@ -30,58 +31,73 @@ export default function GarageDetail() {
   if (!garage) {
     return (
       <PageLayout>
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Garage not found</p>
-          <Link to="/garages">
-            <Button className="mt-4">Browse Garages</Button>
-          </Link>
+        <div className="space-y-6">
+          <PageTitle>Garage Not Found</PageTitle>
+          <Card>
+            <CardContent className="py-12 text-center text-muted-foreground">
+              The garage you're looking for doesn't exist or has been removed.
+            </CardContent>
+          </Card>
         </div>
       </PageLayout>
     );
   }
 
-  const approvedReviews = (garage as any).reviews?.filter((r: any) => r.approved) || [];
-
   return (
     <PageLayout>
       <div className="space-y-6">
-        <div>
-          <PageTitle>Garage Listing</PageTitle>
-          <div className="flex items-center gap-2 mt-2 text-muted-foreground">
-            <MapPin className="h-4 w-4" />
-            {(garage as any).location || 'Location not specified'}
+        <div className="flex items-start justify-between">
+          <div>
+            <PageTitle>Garage Details</PageTitle>
+            <div className="flex items-center gap-2 mt-2 text-muted-foreground">
+              <MapPin className="h-4 w-4" />
+              <span>{garage.location}</span>
+            </div>
           </div>
+          <Badge variant={garage.status === 'active' ? 'default' : 'secondary'}>
+            {garage.status}
+          </Badge>
         </div>
-
-        <GaragePhotoGallery photos={(garage as any).photos || []} />
 
         <div className="grid md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Pricing</CardTitle>
+                <CardTitle>Photos</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Hourly Rate</span>
-                  <span className="font-semibold">${((garage as any).hourlyRate || 0).toString()}/hr</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Daily Rate</span>
-                  <span className="font-semibold">${((garage as any).dailyRate || 0).toString()}/day</span>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  {garage.photos.length > 0 ? (
+                    garage.photos.map((photo, index) => (
+                      <img
+                        key={index}
+                        src={photo}
+                        alt={`Garage ${index + 1}`}
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                    ))
+                  ) : (
+                    <img
+                      src="/assets/generated/garage-placeholder.dim_1200x800.png"
+                      alt="Garage"
+                      className="w-full h-48 object-cover rounded-lg col-span-2"
+                    />
+                  )}
                 </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>Available Tools</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Wrench className="h-5 w-5" />
+                  Available Tools
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {((garage as any).tools || []).map((tool: string) => (
-                    <Badge key={tool} variant="secondary">
-                      <Wrench className="mr-1 h-3 w-3" />
+                  {garage.tools.map((tool, index) => (
+                    <Badge key={index} variant="outline">
                       {tool}
                     </Badge>
                   ))}
@@ -91,50 +107,76 @@ export default function GarageDetail() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Safety Rules</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Rules & Requirements
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm whitespace-pre-wrap">{(garage as any).rules || 'No rules specified'}</p>
+                <p className="text-muted-foreground">{garage.rules}</p>
+                <div className="mt-4 space-y-2">
+                  {garage.depositRequired && (
+                    <div className="flex items-center gap-2">
+                      <Shield className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">Security deposit required</span>
+                    </div>
+                  )}
+                  {garage.waiverRequired && (
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">Liability waiver required</span>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Requirements</CardTitle>
+                <CardTitle>Pricing</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
-                {(garage as any).depositRequired && (
-                  <div className="flex items-center gap-2 text-sm">
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm">Hourly Rate</span>
+                  </div>
+                  <span className="font-semibold">${garage.hourlyRate}/hr</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
                     <DollarSign className="h-4 w-4 text-muted-foreground" />
-                    <span>Security deposit required</span>
+                    <span className="text-sm">Daily Rate</span>
                   </div>
-                )}
-                {(garage as any).waiverRequired && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                    <span>Waiver must be signed</span>
-                  </div>
-                )}
-                {!(garage as any).depositRequired && !(garage as any).waiverRequired && (
-                  <p className="text-sm text-muted-foreground">No special requirements</p>
-                )}
+                  <span className="font-semibold">${garage.dailyRate}/day</span>
+                </div>
               </CardContent>
             </Card>
 
-            <Button className="w-full" size="lg" onClick={() => setBookingModalOpen(true)}>
-              Book This Space
-            </Button>
-
-            <Button variant="outline" className="w-full" onClick={() => setDiyModalOpen(true)}>
-              <Wrench className="mr-2 h-4 w-4" />
-              Need Help While DIY?
-            </Button>
+            <Card>
+              <CardContent className="pt-6 space-y-3">
+                <Button
+                  className="w-full"
+                  size="lg"
+                  onClick={() => setBookingModalOpen(true)}
+                  disabled={garage.status !== 'active'}
+                >
+                  Book This Garage
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => setDIYSupportModalOpen(true)}
+                >
+                  <Wrench className="mr-2 h-4 w-4" />
+                  DIY Support
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
-
-        <ReviewList reviews={approvedReviews} rating={(garage as any).rating} />
       </div>
 
       <GarageBookingModal
@@ -143,11 +185,11 @@ export default function GarageDetail() {
         garage={garage}
         onOpenDIYSupport={() => {
           setBookingModalOpen(false);
-          setDiyModalOpen(true);
+          setDIYSupportModalOpen(true);
         }}
       />
 
-      <DIYSupportModal open={diyModalOpen} onOpenChange={setDiyModalOpen} />
+      <DIYSupportModal open={diySupportModalOpen} onOpenChange={setDIYSupportModalOpen} />
     </PageLayout>
   );
 }

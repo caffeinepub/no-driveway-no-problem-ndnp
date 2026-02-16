@@ -1,20 +1,20 @@
 import Set "mo:core/Set";
-import List "mo:core/List";
 import Map "mo:core/Map";
 import Array "mo:core/Array";
+import Iter "mo:core/Iter";
 import Order "mo:core/Order";
 import Time "mo:core/Time";
 import Text "mo:core/Text";
-import Iter "mo:core/Iter";
-import Principal "mo:core/Principal";
-import Runtime "mo:core/Runtime";
 import Float "mo:core/Float";
-import Int "mo:core/Int";
+import Runtime "mo:core/Runtime";
+import Principal "mo:core/Principal";
 import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 import AccessControl "authorization/access-control";
 import ExternalBlob "blob-storage/Storage";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor {
   // Authorization
   let accessControlState = AccessControl.initState();
@@ -61,6 +61,7 @@ actor {
     status : AssistanceStatus;
     details : Text;
     timestamp : Time.Time;
+    assignedMechanic : ?Principal;
   };
 
   public type AssistanceType = {
@@ -457,6 +458,7 @@ actor {
       status = #pending;
       details;
       timestamp = Time.now();
+      assignedMechanic = null;
     };
 
     assistanceRequests.add(requestId, request);
@@ -479,8 +481,15 @@ actor {
     switch (assistanceRequests.get(requestId)) {
       case (null) { null };
       case (?request) {
-        if (request.user != caller and not hasRole(caller, #mechanic) and not AccessControl.isAdmin(accessControlState, caller)) {
-          Runtime.trap("Unauthorized: Can only view your own requests or if you are a mechanic/admin");
+        let isOwner = request.user == caller;
+        let isAssignedMechanic = switch (request.assignedMechanic) {
+          case (?mechanic) { mechanic == caller };
+          case (null) { false };
+        };
+        let isAdmin = AccessControl.isAdmin(accessControlState, caller);
+
+        if (not (isOwner or isAssignedMechanic or isAdmin)) {
+          Runtime.trap("Unauthorized: Can only view your own requests, assigned requests, or if you are an admin");
         };
         ?request;
       };
@@ -510,6 +519,35 @@ actor {
     assistanceRequests.values().toArray();
   };
 
+  public shared ({ caller }) func acceptAssistanceRequest(requestId : Nat) : async () {
+    if (not hasRole(caller, #mechanic)) {
+      Runtime.trap("Unauthorized: Only mechanics can accept assistance requests");
+    };
+
+    switch (assistanceRequests.get(requestId)) {
+      case (null) { Runtime.trap("Request not found") };
+      case (?request) {
+        if (request.status != #pending) {
+          Runtime.trap("Request is not in pending status");
+        };
+
+        assistanceRequests.add(
+          requestId,
+          {
+            id = request.id;
+            user = request.user;
+            bookingId = request.bookingId;
+            serviceType = request.serviceType;
+            status = #accepted;
+            details = request.details;
+            timestamp = request.timestamp;
+            assignedMechanic = ?caller;
+          },
+        );
+      };
+    };
+  };
+
   public shared ({ caller }) func updateAssistanceRequestStatus(requestId : Nat, status : AssistanceStatus) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can update assistance requests");
@@ -518,10 +556,21 @@ actor {
     switch (assistanceRequests.get(requestId)) {
       case (null) { Runtime.trap("Request not found") };
       case (?request) {
-        // Owner can cancel, mechanics can accept/complete/reject, admins can do anything
-        let canUpdate = (request.user == caller and (status == #cancelled)) or
-                        (hasRole(caller, #mechanic) and (status == #accepted or status == #completed or status == #rejected)) or
-                        AccessControl.isAdmin(accessControlState, caller);
+        let isOwner = request.user == caller;
+        let isAssignedMechanic = switch (request.assignedMechanic) {
+          case (?mechanic) { mechanic == caller and hasRole(caller, #mechanic) };
+          case (null) { false };
+        };
+        let isAdmin = AccessControl.isAdmin(accessControlState, caller);
+
+        // Owner can only cancel their own requests
+        let ownerCanUpdate = isOwner and status == #cancelled;
+        
+        // Assigned mechanic can complete or reject
+        let mechanicCanUpdate = isAssignedMechanic and (status == #completed or status == #rejected);
+        
+        // Admin can do anything
+        let canUpdate = ownerCanUpdate or mechanicCanUpdate or isAdmin;
 
         if (not canUpdate) {
           Runtime.trap("Unauthorized: Insufficient permissions to update this request");
@@ -537,6 +586,7 @@ actor {
             status;
             details = request.details;
             timestamp = request.timestamp;
+            assignedMechanic = request.assignedMechanic;
           },
         );
       };

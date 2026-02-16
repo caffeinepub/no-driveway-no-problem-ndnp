@@ -1,230 +1,163 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-16T21:39:38.085Z",
-  "summary": "Diff adds significant frontend scaffolding (DIY Support modal, booking modal with assistance/waiver/payment tabs, Coming Soon simulated flow components, multiple admin pages/routes/guard) and introduces many new backend types in backend/main.mo. However, several BuildRequest requirements are only partially implemented (UI-only) or lack evidence of required backend persistence/workflows/admin tooling beyond placeholders.",
+  "generatedAt": "2026-02-16T23:05:28.992Z",
+  "summary": "Frontend added UI surfaces for notifications and transaction history and updated payment method selector labeling, but core backend functionality (RBAC/admin whitelist, internal escrow ledger, booking completion gating, and persisted in-app notifications) is not evidenced in the diff. Notification hooks are explicitly stubbed to return empty data / do nothing. A migration for mechanic assistance requests was added that is unrelated to the requested scope.",
   "missing_requirements": [
     {
-      "id": "REQ-13",
-      "requirement": "Persist DIY support session per user and allow saving recommended tools/consumables to the session so they survive refresh.",
-      "reason": "ToolRecommendationsSection has a “Save to My Session” button but it only shows a toast; no evidence of a backend call or any persisted session storage keyed by user.",
+      "id": "REQ-32",
+      "requirement": "Implement Internet Identity–only RBAC in the backend with persisted Principal→Role registry and enforce it across privileged backend methods.",
+      "reason": "The diff does not show any persisted Principal→Role registry or explicit Unauthorized rejection logic across privileged methods; backend/main.mo only shows AccessControl initialization/mixin inclusion in the truncated portion.",
       "evidence": [
-        "frontend/src/components/diy/ToolRecommendationsSection.tsx",
-        "frontend/src/hooks/useQueries.ts"
-      ]
-    },
-    {
-      "id": "REQ-15",
-      "requirement": "Mechanic assistance mid-booking must be persisted in backend and linked to user + booking/session, and be visible in both customer and mechanic dashboards with status lifecycle.",
-      "reason": "MechanicAssistanceAddon is UI-only and does not show any submit/persist action; GarageBookingModal state tracks assistanceRequested but diff does not show a backend mutation to create an assistance request or link it to a bookingId. Dashboards display assistance requests, but there is no evidence in the shown diff of how requests are created/updated.",
-      "evidence": [
-        "frontend/src/components/booking/MechanicAssistanceAddon.tsx",
-        "frontend/src/components/booking/GarageBookingModal.tsx",
-        "frontend/src/pages/dashboards/CustomerDashboard.tsx",
-        "frontend/src/pages/dashboards/MechanicDashboard.tsx",
         "backend/main.mo"
       ]
     },
     {
-      "id": "REQ-17",
-      "requirement": "User identity verification submission workflow (document upload + status) with persisted status and admin approve/reject actions gated to admins.",
-      "reason": "Admin VerificationQueue UI exists, but diff does not show the user-facing submission/upload UI implementation nor backend functions/state for storing submissions and returning status. Backend/main.mo shows only a type (UserVerification) without evidence of functional endpoints/persistence.",
+      "id": "REQ-33",
+      "requirement": "Add backend-managed Admin whitelist for assigning Admin role and expose isCallerAdmin (or equivalent) for route protection; admin-only methods must trap Unauthorized.",
+      "reason": "Frontend calls actor.isCallerAdmin(), but the diff does not show backend implementation of an admin whitelist or Unauthorized traps for admin-only methods.",
       "evidence": [
-        "frontend/src/pages/admin/VerificationQueue.tsx",
-        "backend/main.mo"
-      ]
-    },
-    {
-      "id": "REQ-18",
-      "requirement": "Insurance upload workflow for mechanics/garage owners with persisted document reference + status visible to users/admin; admin can approve/reject.",
-      "reason": "InsuranceReview admin page is placeholder text only; diff shows InsuranceDocument type but no evidence of upload UI, user-visible status UI, admin actions, or backend functions/persistence.",
-      "evidence": [
-        "frontend/src/pages/admin/InsuranceReview.tsx",
-        "backend/main.mo"
-      ]
-    },
-    {
-      "id": "REQ-19",
-      "requirement": "Persist signed waiver record (signer, timestamp, acceptance) and display it later in booking details and admin tools; enforce waiverRequired=true before completing booking.",
-      "reason": "GarageBookingModal enforces signing before confirm when waiverRequired, and WaiverSigningModal collects typed name/checkbox, but there is no evidence of persisting a signed waiver record to backend or showing it later in booking details/admin tools. Backend defines a Waiver type but no functions are evidenced.",
-      "evidence": [
-        "frontend/src/components/booking/GarageBookingModal.tsx",
-        "frontend/src/components/waivers/WaiverSigningModal.tsx",
-        "backend/main.mo"
-      ]
-    },
-    {
-      "id": "REQ-20",
-      "requirement": "Dispute ticketing workflow tied to booking/listing with statuses, timeline updates (comments), user dashboard visibility, and admin resolve/close with resolution note.",
-      "reason": "Admin DisputeTools page is placeholder only (“No active disputes”), and backend/main.mo only shows Dispute/DisputeComment types without evidence of create/update/list endpoints or timeline UI.",
-      "evidence": [
-        "frontend/src/pages/admin/DisputeTools.tsx",
-        "backend/main.mo",
-        "frontend/src/pages/dashboards/CustomerDashboard.tsx"
-      ]
-    },
-    {
-      "id": "REQ-21",
-      "requirement": "Simulated Coming Soon UX for in-app messaging, push notifications, real-time tracking, and escrow—entry points must show Coming Soon and require no backend calls.",
-      "reason": "Diff adds generic ComingSoonBadge and SimulatedFlowModal plus a “Coming Soon Features” nav link, but no specific messaging/notifications/tracking/escrow entry points or simulated screens are evidenced in the shown files.",
-      "evidence": [
-        "frontend/src/components/coming-soon/ComingSoonBadge.tsx",
-        "frontend/src/components/coming-soon/SimulatedFlowModal.tsx",
-        "frontend/src/components/layout/TopNav.tsx"
-      ]
-    },
-    {
-      "id": "REQ-22",
-      "requirement": "Backend-configurable fee/commission settings (within ranges) persisted; apply to bookings/rentals and store revenue records; admin revenue view must reflect computed totals.",
-      "reason": "RevenueTracking page reads revenue and fee configuration via hooks, but diff provides no evidence of backend endpoints implementing persisted configuration, enforcement of allowed ranges, or computation/storage of revenue records tied to bookings/rentals. backend/main.mo shows only a RevenueModel type.",
-      "evidence": [
-        "frontend/src/pages/admin/RevenueTracking.tsx",
         "frontend/src/hooks/useQueries.ts",
         "backend/main.mo"
       ]
     },
     {
-      "id": "REQ-23",
-      "requirement": "Featured mechanic boost: mechanic can request/enable; admin can approve/enable/disable; mechanic cards show Featured badge and browse prioritizes featured mechanics.",
-      "reason": "FeaturedBoostManagement admin page is placeholder only; no mechanic request UI, no Featured badge on mechanic cards, and no browse sorting logic is evidenced. backend/main.mo does not show featured flag usage beyond RevenueModel including featuredBoostFee.",
+      "id": "REQ-34",
+      "requirement": "Implement provider-agnostic internal escrow ledger system in backend with persisted Transaction model and escrow accounting per booking.",
+      "reason": "No backend Transaction model, escrow accounting, or persisted payment state is shown in the backend diff. Frontend types are labeled as placeholder and mention backend not yet implemented.",
       "evidence": [
-        "frontend/src/pages/admin/FeaturedBoostManagement.tsx",
-        "frontend/src/components/mechanics/MechanicCard.tsx",
+        "backend/main.mo",
+        "frontend/src/lib/types.ts"
+      ]
+    },
+    {
+      "id": "REQ-35",
+      "requirement": "Implement admin-controlled escrow actions in backend: Release Funds and Issue Refund with state-transition validation and auditability.",
+      "reason": "Admin UI calls useReleaseFunds/useRefundTransaction, but no backend methods or validation/audit logic are evidenced in the diff summary.",
+      "evidence": [
+        "frontend/src/pages/admin/EscrowTransactions.tsx",
         "backend/main.mo"
       ]
     },
     {
-      "id": "REQ-24",
-      "requirement": "Emergency service surge pricing persisted in backend and applied to customer booking/quote views with base vs adjusted price; mechanic can configure surge within bounds.",
-      "reason": "MechanicDashboard has local UI state for emergencyEnabled and surgeMultiplier with toast only; no evidence of persistence or backend computation. PricingBreakdown supports an emergencySurge line item but diff does not show it being driven by backend-calculated pricing in customer booking/quote views.",
+      "id": "REQ-36",
+      "requirement": "Enforce booking lifecycle gating in backend so booking cannot be moved to Completed unless escrow transaction is Released.",
+      "reason": "No backend booking status update logic or escrow/booking gating is shown in the diff summary.",
       "evidence": [
-        "frontend/src/pages/dashboards/MechanicDashboard.tsx",
-        "frontend/src/components/booking/PricingBreakdown.tsx",
         "backend/main.mo"
       ]
     },
     {
-      "id": "REQ-25",
-      "requirement": "Mechanic pro membership and customer DIY membership: manage status, persist it, and apply DIY membership discount in garage rental pricing breakdown.",
-      "reason": "TopNav links to Membership Settings route, and PricingBreakdown supports a membership discount line, but diff does not show membership persistence logic, a functioning settings page implementation, or wiring discount application in booking pricing based on stored membership state.",
+      "id": "REQ-37",
+      "requirement": "Design payment backend interfaces to be provider-agnostic (provider enum + optional provider reference; no Stripe-specific requirements).",
+      "reason": "Only frontend placeholder enums/types are shown; no backend provider-agnostic interfaces or boundaries are evidenced in the backend diff.",
+      "evidence": [
+        "frontend/src/lib/types.ts",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-38",
+      "requirement": "Replace simulated payment UI with functional internal-ledger payment flow end-to-end (no simulated card entry; label Test Mode – Internal Ledger Active; booking confirm wired to backend payment/booking mutations).",
+      "reason": "PaymentMethodSelector labeling was updated, but GarageBookingModal still appears to call only createBooking and uses a toast claiming funds are held; the diff does not show an actual escrow/transaction creation mutation or backend integration for holding funds.",
+      "evidence": [
+        "frontend/src/components/payments/PaymentMethodSelector.tsx",
+        "frontend/src/components/booking/GarageBookingModal.tsx"
+      ]
+    },
+    {
+      "id": "REQ-39",
+      "requirement": "Create user-visible transaction history and booking payment status UI powered by backend queries (no placeholders).",
+      "reason": "UI components/pages exist, but the diff does not evidence backend query methods returning real transaction data; frontend types are explicitly marked as placeholders and backend ledger is not shown.",
+      "evidence": [
+        "frontend/src/pages/payments/TransactionHistory.tsx",
+        "frontend/src/components/payments/TransactionHistoryList.tsx",
+        "frontend/src/lib/types.ts",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-40",
+      "requirement": "Add Admin UI to view transactions and perform Release/Refund with proper authorization handling and refresh.",
+      "reason": "Admin page exists and handles Unauthorized messaging, but the diff does not evidence the required backend authorization enforcement/escrow actions or that hooks are wired to real backend methods.",
+      "evidence": [
+        "frontend/src/pages/admin/EscrowTransactions.tsx",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-41",
+      "requirement": "Implement fully functional in-app notification system (backend + frontend) with specified notification types; persist notifications per user; emit on events; fetch list/unread count; mark as read.",
+      "reason": "Frontend hooks explicitly state backend methods are not implemented and return empty arrays/zero counts or just log to console; no backend notification persistence/emission is shown.",
+      "evidence": [
+        "frontend/src/hooks/useNotifications.ts",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-42",
+      "requirement": "Add notification badge counter and dropdown in top navigation showing recent notifications and supports marking as read.",
+      "reason": "UI exists, but because hooks are stubbed (empty list/0 count, no real mark-as-read), the feature is not functional and not powered by backend as required.",
       "evidence": [
         "frontend/src/components/layout/TopNav.tsx",
-        "frontend/src/components/booking/PricingBreakdown.tsx",
+        "frontend/src/components/notifications/NotificationDropdown.tsx",
+        "frontend/src/hooks/useNotifications.ts"
+      ]
+    },
+    {
+      "id": "REQ-43",
+      "requirement": "Add Notification Center page listing all notifications with filtering and bulk mark-as-read.",
+      "reason": "Page UI exists, but it depends on notification hooks that are stubbed and do not call backend, so filtering/bulk actions are not functional against persisted data.",
+      "evidence": [
+        "frontend/src/pages/notifications/NotificationCenter.tsx",
+        "frontend/src/hooks/useNotifications.ts"
+      ]
+    },
+    {
+      "id": "REQ-44",
+      "requirement": "Implement toast alerts for notification-worthy events driven by real backend mutations and subsequent query refresh (no simulated flows/placeholders).",
+      "reason": "Toasts exist for booking confirmation/dispute opened/admin release/refund, but the notification system hooks are stubbed and the backend ledger/notification emission is not evidenced; thus toasts are not demonstrably driven by real backend notification/payment state changes.",
+      "evidence": [
+        "frontend/src/components/booking/GarageBookingModal.tsx",
+        "frontend/src/pages/disputes/Disputes.tsx",
+        "frontend/src/pages/admin/EscrowTransactions.tsx",
+        "frontend/src/hooks/useNotifications.ts",
         "backend/main.mo"
-      ]
-    },
-    {
-      "id": "REQ-26",
-      "requirement": "Admin waitlist management and demand heatmap aggregation by location string; admin pages gated by admin checks.",
-      "reason": "DemandHeatmap is present but only shows 'No demand data available' and no aggregation. WaitlistManagement route is referenced but its implementation is not evidenced in the provided diff snippet. Admin gating is partially present (AdminDashboard checks isAdmin; AdminRouteGuard exists) but it is not shown applied to the admin routes.",
-      "evidence": [
-        "frontend/src/pages/admin/DemandHeatmap.tsx",
-        "frontend/src/App.tsx",
-        "frontend/src/components/admin/AdminRouteGuard.tsx",
-        "frontend/src/pages/dashboards/AdminDashboard.tsx"
-      ]
-    },
-    {
-      "id": "REQ-27",
-      "requirement": "Fix My Car intake flow must support media upload using existing upload patterns; results screen must show estimated cost from estimator; AI pre-diagnosis simulated and labeled Coming Soon.",
-      "reason": "Landing and CustomerDashboard include a Fix My Car CTA and routes are added in App.tsx, but the intake/results page implementations are not shown in the diff summary; therefore media upload, estimator integration, and Coming Soon AI labeling are not evidenced.",
-      "evidence": [
-        "frontend/src/pages/Landing.tsx",
-        "frontend/src/pages/dashboards/CustomerDashboard.tsx",
-        "frontend/src/App.tsx"
-      ]
-    },
-    {
-      "id": "REQ-28",
-      "requirement": "Desktop browse enhancements: mechanic compare (select up to N), advanced filtering panel layout, and map+list split-screen mode (map can be simulated/Coming Soon).",
-      "reason": "MechanicFilters/GarageFilters are simple card-based filters with no compare UI and no split-screen mode. GarageBrowse provides a tabbed list vs Coming Soon map, but no split-screen toggle and no mechanic compare implementation are evidenced.",
-      "evidence": [
-        "frontend/src/components/mechanics/MechanicFilters.tsx",
-        "frontend/src/pages/garages/GarageBrowse.tsx"
-      ]
-    },
-    {
-      "id": "REQ-30",
-      "requirement": "No-show penalty system: mark booking/rental as no-show with permissions, create penalty record linked to user + booking/rental, show in user dashboards, and admin list/filter users with penalties.",
-      "reason": "NoShowPenalties admin page is placeholder only; backend/main.mo defines NoShowPenalty type but diff shows no endpoints for marking no-shows, no linking to bookings/rentals, and no user dashboard display of penalties.",
-      "evidence": [
-        "frontend/src/pages/admin/NoShowPenalties.tsx",
-        "backend/main.mo"
-      ]
-    },
-    {
-      "id": "REQ-31",
-      "requirement": "Desktop calendar drag-and-drop booking UX simulated (Coming Soon) without breaking existing availability/booking views.",
-      "reason": "No calendar drag-and-drop UI is evidenced. GarageBookingModal mentions 'calendar integration coming soon' but does not show drag-and-drop behavior or Coming Soon labeling for drag actions.",
-      "evidence": [
-        "frontend/src/components/booking/GarageBookingModal.tsx"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Landing page marketing claim of 'interactive map search' for mechanics/garages.",
-      "reason": "BuildRequest only requires map portions be simulated/Coming Soon if not functional; the Landing copy implies an interactive map search exists, while GarageBrowse explicitly marks Map View as Coming Soon.",
+      "description": "Added a backend stable-state migration for mechanic assistance requests to introduce an assignedMechanic field.",
+      "reason": "The BuildRequest scope is escrow ledger payments, RBAC/admin whitelist, and in-app notifications; this migration concerns mechanic assistance request schema evolution and is not requested.",
       "evidence": [
-        "frontend/src/pages/Landing.tsx",
-        "frontend/src/pages/garages/GarageBrowse.tsx"
+        "backend/migration.mo"
       ]
     }
   ],
-  "confidence": 0.72,
+  "confidence": 0.74,
   "changed_files": [
     "backend/main.mo",
+    "backend/migration.mo",
     "frontend-file-summaries.txt",
     "frontend/src/App.tsx",
-    "frontend/src/components/admin/AdminRouteGuard.tsx",
     "frontend/src/components/booking/GarageBookingModal.tsx",
-    "frontend/src/components/booking/MechanicAssistanceAddon.tsx",
-    "frontend/src/components/booking/PricingBreakdown.tsx",
-    "frontend/src/components/coming-soon/ComingSoonBadge.tsx",
-    "frontend/src/components/coming-soon/SimulatedFlowModal.tsx",
-    "frontend/src/components/diy/DIYSupportModal.tsx",
-    "frontend/src/components/diy/RepairCostEstimatorSection.tsx",
-    "frontend/src/components/diy/ToolRecommendationsSection.tsx",
-    "frontend/src/components/diy/VideoConsultationComingSoon.tsx",
-    "frontend/src/components/garages/GarageCard.tsx",
-    "frontend/src/components/garages/GarageFilters.tsx",
     "frontend/src/components/layout/TopNav.tsx",
-    "frontend/src/components/mechanics/MechanicCard.tsx",
-    "frontend/src/components/mechanics/MechanicFilters.tsx",
-    "frontend/src/components/mechanics/MechanicVerificationBadges.tsx",
+    "frontend/src/components/notifications/NotificationDropdown.tsx",
     "frontend/src/components/payments/PaymentMethodSelector.tsx",
-    "frontend/src/components/reviews/ReviewList.tsx",
-    "frontend/src/components/waivers/WaiverSigningModal.tsx",
+    "frontend/src/components/payments/TransactionHistoryList.tsx",
+    "frontend/src/components/payments/TransactionStatusBadge.tsx",
+    "frontend/src/hooks/useNotifications.ts",
     "frontend/src/hooks/useQueries.ts",
     "frontend/src/lib/types.ts",
-    "frontend/src/pages/Landing.tsx",
-    "frontend/src/pages/admin/DemandHeatmap.tsx",
-    "frontend/src/pages/admin/DisputeTools.tsx",
-    "frontend/src/pages/admin/FeaturedBoostManagement.tsx",
-    "frontend/src/pages/admin/InsuranceReview.tsx",
-    "frontend/src/pages/admin/MarketplaceModeration.tsx",
-    "frontend/src/pages/admin/NoShowPenalties.tsx",
-    "frontend/src/pages/admin/RevenueTracking.tsx",
-    "frontend/src/pages/admin/ReviewModeration.tsx",
-    "frontend/src/pages/admin/VerificationQueue.tsx",
-    "frontend/src/pages/admin/WaitlistManagement.tsx",
-    "frontend/src/pages/admin/WaiverRecords.tsx",
+    "frontend/src/pages/admin/EscrowTransactions.tsx",
     "frontend/src/pages/coming-soon/UnsupportedFeaturesHub.tsx",
     "frontend/src/pages/dashboards/AdminDashboard.tsx",
     "frontend/src/pages/dashboards/CustomerDashboard.tsx",
-    "frontend/src/pages/dashboards/GarageOwnerDashboard.tsx",
-    "frontend/src/pages/dashboards/MechanicDashboard.tsx",
     "frontend/src/pages/disputes/Disputes.tsx",
-    "frontend/src/pages/fix-my-car/FixMyCarIntake.tsx",
-    "frontend/src/pages/fix-my-car/FixMyCarResults.tsx",
-    "frontend/src/pages/garages/GarageBrowse.tsx",
     "frontend/src/pages/garages/GarageDetail.tsx",
-    "frontend/src/pages/garages/GarageListingEditor.tsx",
-    "frontend/src/pages/mechanics/MechanicBrowse.tsx",
-    "frontend/src/pages/mechanics/MechanicProfileEditor.tsx",
-    "frontend/src/pages/mechanics/MechanicProfilePublic.tsx",
-    "frontend/src/pages/settings/MembershipSettings.tsx",
-    "frontend/src/pages/trust-safety/IdentityVerification.tsx",
+    "frontend/src/pages/notifications/NotificationCenter.tsx",
+    "frontend/src/pages/payments/TransactionHistory.tsx",
     "project_state.json"
   ]
 }

@@ -30,6 +30,7 @@ export interface MechanicAssistanceRequest {
   'user' : Principal,
   'timestamp' : Time,
   'details' : string,
+  'assignedMechanic' : [] | [Principal],
 }
 export type RepairCategory = { 'brakeJob' : null } |
   { 'other' : string } |
@@ -97,6 +98,7 @@ export interface _SERVICE {
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
+  'acceptAssistanceRequest' : ActorMethod<[bigint], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'createAssistanceRequest' : ActorMethod<
     [bigint, AssistanceType, string],

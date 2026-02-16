@@ -3,7 +3,7 @@ import PageLayout from '../../components/layout/PageLayout';
 import { PageTitle } from '../../components/common/Typography';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Bell, MapPin, DollarSign } from 'lucide-react';
+import { MessageSquare, MapPin } from 'lucide-react';
 import ComingSoonBadge from '../../components/coming-soon/ComingSoonBadge';
 import SimulatedFlowModal from '../../components/coming-soon/SimulatedFlowModal';
 
@@ -25,17 +25,6 @@ export default function UnsupportedFeaturesHub() {
       ],
     },
     {
-      title: 'Push Notifications',
-      description: 'Get instant alerts for bookings and messages',
-      icon: Bell,
-      steps: [
-        'Enable notifications in settings',
-        'Grant browser permissions',
-        'Receive booking confirmations',
-        'Get notified of new messages',
-      ],
-    },
-    {
       title: 'Real-Time Tracking',
       description: 'Track mechanic arrival in real-time',
       icon: MapPin,
@@ -44,17 +33,6 @@ export default function UnsupportedFeaturesHub() {
         'View mechanic location on map',
         'Get ETA updates',
         'Receive arrival notification',
-      ],
-    },
-    {
-      title: 'Escrow Payment',
-      description: 'Secure payment held until service completion',
-      icon: DollarSign,
-      steps: [
-        'Confirm booking and payment amount',
-        'Funds held in escrow',
-        'Service completed and verified',
-        'Payment released to provider',
       ],
     },
   ];
@@ -69,7 +47,7 @@ export default function UnsupportedFeaturesHub() {
     <PageLayout>
       <div className="space-y-6">
         <div>
-          <PageTitle>Coming Soon Features</PageTitle>
+          <PageTitle>Features in Development</PageTitle>
           <p className="text-muted-foreground mt-2">
             These features are currently in development and will be available soon
           </p>

@@ -16,6 +16,7 @@ export interface MechanicAssistanceRequest {
     user: Principal;
     timestamp: Time;
     details: string;
+    assignedMechanic?: Principal;
 }
 export interface ToolRecommendation {
     tools: Array<string>;
@@ -96,6 +97,7 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
+    acceptAssistanceRequest(requestId: bigint): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     createAssistanceRequest(bookingId: bigint, serviceType: AssistanceType, details: string): Promise<bigint>;
     createRepairEstimate(repairType: RepairCategory, vehicleInfo: string, partsCost: bigint, laborHours: number, hourlyRate: bigint): Promise<bigint>;

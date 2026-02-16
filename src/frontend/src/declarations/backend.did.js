@@ -57,6 +57,7 @@ export const MechanicAssistanceRequest = IDL.Record({
   'user' : IDL.Principal,
   'timestamp' : Time,
   'details' : IDL.Text,
+  'assignedMechanic' : IDL.Opt(IDL.Principal),
 });
 export const ToolRecommendation = IDL.Record({
   'tools' : IDL.Vec(IDL.Text),
@@ -119,6 +120,7 @@ export const idlService = IDL.Service({
     ),
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+  'acceptAssistanceRequest' : IDL.Func([IDL.Nat], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'createAssistanceRequest' : IDL.Func(
       [IDL.Nat, AssistanceType, IDL.Text],
@@ -239,6 +241,7 @@ export const idlFactory = ({ IDL }) => {
     'user' : IDL.Principal,
     'timestamp' : Time,
     'details' : IDL.Text,
+    'assignedMechanic' : IDL.Opt(IDL.Principal),
   });
   const ToolRecommendation = IDL.Record({
     'tools' : IDL.Vec(IDL.Text),
@@ -301,6 +304,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+    'acceptAssistanceRequest' : IDL.Func([IDL.Nat], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'createAssistanceRequest' : IDL.Func(
         [IDL.Nat, AssistanceType, IDL.Text],

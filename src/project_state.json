@@ -1,15 +1,21 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 5,
+  "projectStateVersion": 7,
   "summary": "Two-sided marketplace web app (mobile-responsive) for automotive services and DIY garage rentals connecting customers, independent mechanics, and garage owners; modern, clean, trustworthy UX.",
   "architectural_notes": [
     "Mobile-responsive web platform with modern/clean/trustworthy UX (Uber + Airbnb + TaskRabbit style).",
     "Google Maps integration required for garage rental marketplace map and pins.",
     "Support file uploads for mechanic credentials (ASE), insurance verification, and job photos.",
-    "Unsupported capabilities (e.g., video calls, push notifications, real-time tracking, escrow, real-time chat/messaging) should be presented as simulated UX flows and clearly labeled as “Coming Soon.”"
+    "Unsupported capabilities (e.g., video calls, push notifications, real-time tracking, escrow, real-time chat/messaging) should be presented as simulated UX flows and clearly labeled as “Coming Soon.”",
+    "No “Coming Soon” placeholders: if an external integration is not available, implement a functional internal logic version with proper state handling and UI feedback.",
+    "Payments must be provider-agnostic: implement an internal escrow/ledger as the source of truth now, designed so Stripe Connect (or other providers) can later be added as an adapter without changing booking flows/UI or core business tables.",
+    "Authentication must remain Internet Identity only with RBAC enforced server-side (middleware/route protection), backend role registry mapping principal→role, and admin assignment via backend whitelist (no email/password, resets, 2FA, or email verification).",
+    "Replace all email/SMS notifications with a functional in-app notification center (persisted notifications + real-time badge counter + dropdown + notification center page + toast updates).",
+    "Booking lifecycle must be coupled to escrow state: bookings cannot transition to COMPLETED unless funds are in RELEASED state; admin actions can release/refund and transition related states accordingly."
   ],
   "known_issues": [
-    "Attempted full-build implementation failed with: “Sorry, the AI couldn't implement that request. Please rephrase or simplify.”"
+    "Attempted full-build implementation failed with: “Sorry, the AI couldn't implement that request. Please rephrase or simplify.”",
+    "Full build attempt failed after user issued 'build' / 'start the implementation' with: “The AI struggled with your request. Please rephrase or break it down into simpler steps.”"
   ],
   "isFixRequest": true,
   "existing_features": [
@@ -260,6 +266,70 @@
         "REQ-31"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-replace-simulated-payment-ui-with-functional-internal-ledger-payment-flow-in-the-booking-experience-including-explicit-test-mode-internal-ledger-active-labeling-and-no-simulated-card-entry",
+      "title": "Replace simulated payment UI with functional internal-ledger payment flow in the booking experience, including explicit “Test Mode – Internal Ledger Active” labeling and no simulated card entry.",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-user-visible-transaction-history-and-booking-payment-status-ui-surfaces-per-booking-and-per-user-powered-by-backend-queries",
+      "title": "Create user-visible transaction history and booking payment status UI surfaces (per booking and per user) powered by backend queries.",
+      "reqIds": [
+        "REQ-39"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-admin-ui-to-view-transactions-and-perform-escrow-actions-release-funds-issue-refund-with-proper-authorization-handling-and-state-refresh",
+      "title": "Add Admin UI to view transactions and perform escrow actions (Release Funds / Issue Refund) with proper authorization handling and state refresh.",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-fully-functional-in-app-notification-system-backend-frontend-with-notification-types-bookingcreated-bookingconfirmed-fundsreleased-disputeopened-accountsuspended",
+      "title": "Implement a fully functional in-app notification system (backend + frontend) with notification types: BookingCreated, BookingConfirmed, FundsReleased, DisputeOpened, AccountSuspended.",
+      "reqIds": [
+        "REQ-41"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-notification-badge-counter-and-dropdown-in-the-top-navigation-that-shows-recent-notifications-and-supports-marking-as-read",
+      "title": "Add a notification badge counter and dropdown in the top navigation that shows recent notifications and supports marking as read.",
+      "reqIds": [
+        "REQ-42"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-notification-center-dashboard-page-that-lists-all-notifications-with-filtering-e-g-unread-all-and-provides-bulk-actions-e-g-mark-all-as-read",
+      "title": "Add a Notification Center dashboard page that lists all notifications with filtering (e.g., unread/all) and provides bulk actions (e.g., Mark all as read).",
+      "reqIds": [
+        "REQ-43"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-toast-alerts-for-notification-worthy-events-driven-by-real-backend-mutations-and-subsequent-query-refresh-no-simulated-flows-and-no-coming-soon-placeholders",
+      "title": "Implement toast alerts for notification-worthy events, driven by real backend mutations and subsequent query refresh (no simulated flows and no “Coming Soon” placeholders).",
+      "reqIds": [
+        "REQ-44"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-or-refactor-payment-messaging-escrow-related-coming-soon-and-simulated-flow-ui-so-the-app-contains-no-coming-soon-placeholders-for-the-scopes-covered-here-payments-and-notifications-including-removing-simulated-modals-from-payment-selection-and-removing-redirecting-the-escrow-related-coming-soon-hub-entry-points",
+      "title": "Remove or refactor payment/messaging/escrow-related “Coming Soon” and simulated-flow UI so the app contains no “Coming Soon” placeholders for the scopes covered here (payments and notifications), including removing simulated modals from payment selection and removing/redirecting the escrow-related Coming Soon hub entry points.",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -327,6 +397,60 @@
       "id": "AR-11",
       "summary": "UX Improvements (mobile + desktop): one-tap “Fix My Car”, upload photo/video of issue, AI pre-diagnosis suggestions, estimated cost + nearby mechanics + nearby rental bays, thumb-friendly filtering, Apple Pay/Google Pay, push notifications, real-time en-route tracking, desktop compare mechanics, advanced filtering panel, service breakdown cost estimator, map+list split screen, drag-and-drop calendar booking",
       "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Replace placeholder/simulated integrations with functional internal equivalents: Internet Identity–only RBAC with backend whitelist for Admin; provider-agnostic internal escrow ledger (transaction states Pending→Held→Released→Refunded→Disputed, admin release/refund, booking completion gated on funds released, UI labeled Test Mode); and a fully functional in-app notification center (model + badge + dropdown + center page + toast updates) instead of email/SMS.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Implement Internet Identity–only role-based access control (RBAC) in the backend using a persisted role registry mapping Principal → Role (Admin, Mechanic, Customer, Garage Owner), and enforce it across all privileged backend methods.",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Add a backend-managed Admin whitelist for assigning the Admin role, and expose admin-check endpoints that the frontend can use for route protection.",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Implement a provider-agnostic internal escrow ledger system in the backend with persisted transaction records and escrow account tracking per booking.",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "Implement admin-controlled escrow actions in the backend: “Release Funds” and “Issue Refund”, including state-transition validation and auditability.",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-17",
+      "summary": "Enforce booking lifecycle gating in the backend so that a booking cannot be moved to Completed unless its escrow transaction is in Released state.",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Design the payment backend interfaces to be payment-provider-agnostic so that a future Stripe Connect adapter can be added without changing booking flow or frontend UI component contracts.",
+      "reqIds": [
+        "REQ-37"
+      ],
       "status": "pending"
     }
   ],

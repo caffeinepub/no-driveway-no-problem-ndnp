@@ -2,33 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-new-diy-support-layer-entry-point-across-relevant-customer-facing-pages-render-a-prominent-need-help-while-diy-button-on-garage-detail-pages-and-in-the-customer-diy-garage-booking-flow-opening-a-dedicated-diy-support-panel-modal",
-      "featureTitle": "Add a new DIY Support Layer entry point across relevant customer-facing pages: render a prominent “Need Help While DIY?” button on Garage Detail pages and in the customer DIY/garage booking flow, opening a dedicated DIY Support panel/modal.",
+      "featureId": "feature-replace-simulated-payment-ui-with-functional-internal-ledger-payment-flow-in-the-booking-experience-including-explicit-test-mode-internal-ledger-active-labeling-and-no-simulated-card-entry",
+      "featureTitle": "Replace simulated payment UI with functional internal-ledger payment flow in the booking experience, including explicit “Test Mode – Internal Ledger Active” labeling and no simulated card entry.",
       "files": [
         "frontend/src/components/booking/GarageBookingModal.tsx",
-        "frontend/src/components/diy/DIYSupportModal.tsx",
-        "frontend/src/pages/garages/GarageDetail.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-12"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-tool-recommendations-for-a-selected-repair-scenario-within-the-diy-support-panel-allow-the-user-to-choose-a-repair-type-category-and-receive-a-structured-list-of-recommended-tools-and-consumables-that-can-be-saved-to-the-user-s-diy-session",
-      "featureTitle": "Implement tool recommendations for a selected repair scenario within the DIY Support panel: allow the user to choose a repair type/category and receive a structured list of recommended tools and consumables that can be saved to the user’s DIY session.",
-      "files": [
-        "frontend/src/components/diy/DIYSupportModal.tsx",
-        "frontend/src/components/diy/ToolRecommendationsSection.tsx",
+        "frontend/src/components/payments/PaymentMethodSelector.tsx",
         "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
@@ -41,16 +19,64 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-13"
+        "REQ-38"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-implement-a-repair-cost-estimator-in-the-diy-support-panel-collect-basic-inputs-repair-type-vehicle-info-as-free-text-parts-cost-estimate-labor-time-estimate-and-return-a-calculated-estimate-breakdown-store-estimates-in-the-user-s-diy-session-history",
-      "featureTitle": "Implement a repair cost estimator in the DIY Support panel: collect basic inputs (repair type, vehicle info as free-text, parts cost estimate, labor time estimate) and return a calculated estimate breakdown; store estimates in the user’s DIY session history.",
+      "featureId": "feature-create-user-visible-transaction-history-and-booking-payment-status-ui-surfaces-per-booking-and-per-user-powered-by-backend-queries",
+      "featureTitle": "Create user-visible transaction history and booking payment status UI surfaces (per booking and per user) powered by backend queries.",
       "files": [
-        "frontend/src/components/diy/DIYSupportModal.tsx",
-        "frontend/src/components/diy/RepairCostEstimatorSection.tsx",
+        "frontend/src/App.tsx",
+        "frontend/src/components/payments/TransactionHistoryList.tsx",
+        "frontend/src/components/payments/TransactionStatusBadge.tsx",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/dashboards/CustomerDashboard.tsx",
+        "frontend/src/pages/payments/TransactionHistory.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-39"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-admin-ui-to-view-transactions-and-perform-escrow-actions-release-funds-issue-refund-with-proper-authorization-handling-and-state-refresh",
+      "featureTitle": "Add Admin UI to view transactions and perform escrow actions (Release Funds / Issue Refund) with proper authorization handling and state refresh.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/layout/TopNav.tsx",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/admin/EscrowTransactions.tsx",
+        "frontend/src/pages/dashboards/AdminDashboard.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-40"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-a-fully-functional-in-app-notification-system-backend-frontend-with-notification-types-bookingcreated-bookingconfirmed-fundsreleased-disputeopened-accountsuspended",
+      "featureTitle": "Implement a fully functional in-app notification system (backend + frontend) with notification types: BookingCreated, BookingConfirmed, FundsReleased, DisputeOpened, AccountSuspended.",
+      "files": [
+        "frontend/src/hooks/useNotifications.ts",
         "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
@@ -63,139 +89,60 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-14"
+        "REQ-41"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-add-mechanic-assistance-mid-booking-to-the-garage-rental-booking-experience-as-a-functional-add-on-selection-without-real-time-communication-users-can-request-assistance-choose-assistance-type-and-submit-the-request-the-request-is-stored-and-visible-in-both-customer-and-mechanic-dashboards",
-      "featureTitle": "Add “Add mechanic assistance mid-booking” to the garage rental booking experience as a functional add-on selection (without real-time communication): users can request assistance, choose assistance type, and submit the request; the request is stored and visible in both customer and mechanic dashboards.",
+      "featureId": "feature-add-a-notification-badge-counter-and-dropdown-in-the-top-navigation-that-shows-recent-notifications-and-supports-marking-as-read",
+      "featureTitle": "Add a notification badge counter and dropdown in the top navigation that shows recent notifications and supports marking as read.",
+      "files": [
+        "frontend/src/components/layout/TopNav.tsx",
+        "frontend/src/components/notifications/NotificationDropdown.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-42"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-notification-center-dashboard-page-that-lists-all-notifications-with-filtering-e-g-unread-all-and-provides-bulk-actions-e-g-mark-all-as-read",
+      "featureTitle": "Add a Notification Center dashboard page that lists all notifications with filtering (e.g., unread/all) and provides bulk actions (e.g., Mark all as read).",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/layout/TopNav.tsx",
+        "frontend/src/pages/notifications/NotificationCenter.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-43"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-toast-alerts-for-notification-worthy-events-driven-by-real-backend-mutations-and-subsequent-query-refresh-no-simulated-flows-and-no-coming-soon-placeholders",
+      "featureTitle": "Implement toast alerts for notification-worthy events, driven by real backend mutations and subsequent query refresh (no simulated flows and no “Coming Soon” placeholders).",
       "files": [
         "frontend/src/components/booking/GarageBookingModal.tsx",
-        "frontend/src/components/booking/MechanicAssistanceAddon.tsx",
         "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/dashboards/CustomerDashboard.tsx",
-        "frontend/src/pages/dashboards/MechanicDashboard.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-15"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-create-simulated-coming-soon-ux-flows-for-unsupported-on-demand-mechanic-consultation-via-video-call-upsell-clearly-labeled-as-coming-soon-and-non-functional-beyond-ui-progression-screens",
-      "featureTitle": "Create simulated “Coming Soon” UX flows for unsupported on-demand mechanic consultation via video call upsell, clearly labeled as Coming Soon and non-functional beyond UI progression screens.",
-      "files": [
-        "frontend/src/components/coming-soon/ComingSoonBadge.tsx",
-        "frontend/src/components/coming-soon/SimulatedFlowModal.tsx",
-        "frontend/src/components/diy/DIYSupportModal.tsx",
-        "frontend/src/components/diy/VideoConsultationComingSoon.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-16"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-trust-safety-add-user-identity-verification-submission-as-a-functional-workflow-document-upload-status-including-storage-of-verification-status-and-admin-review-approval-rejection-actions",
-      "featureTitle": "Implement Trust & Safety: add user identity verification submission as a functional workflow (document upload + status), including storage of verification status and admin review/approval/rejection actions.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/admin/VerificationQueue.tsx",
-        "frontend/src/pages/dashboards/AdminDashboard.tsx",
-        "frontend/src/pages/trust-safety/IdentityVerification.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-17"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-trust-safety-support-insurance-upload-as-a-functional-workflow-for-both-mechanics-and-garage-owners-where-applicable-including-a-persisted-insurance-document-reference-and-status-visible-to-users-and-admins",
-      "featureTitle": "Implement Trust & Safety: support insurance upload as a functional workflow for both mechanics and garage owners (where applicable), including a persisted insurance document reference and status visible to users and admins.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/admin/InsuranceReview.tsx",
-        "frontend/src/pages/dashboards/AdminDashboard.tsx",
-        "frontend/src/pages/garages/GarageListingEditor.tsx",
-        "frontend/src/pages/mechanics/MechanicProfileEditor.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-18"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-waiver-digital-signing-as-a-functional-workflow-for-garage-rentals-users-can-view-a-waiver-text-accept-sign-typed-name-checkbox-timestamp-and-the-signed-waiver-record-is-stored-and-viewable-in-booking-details-and-admin-tools",
-      "featureTitle": "Implement waiver digital signing as a functional workflow for garage rentals: users can view a waiver text, accept/sign (typed name + checkbox + timestamp), and the signed waiver record is stored and viewable in booking details and admin tools.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/booking/GarageBookingModal.tsx",
-        "frontend/src/components/waivers/WaiverSigningModal.tsx",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/admin/WaiverRecords.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-19"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-dispute-resolution-as-a-functional-ticketing-workflow-allow-customers-mechanics-garage-owners-to-open-disputes-tied-to-a-booking-listing-exchange-non-real-time-updates-comments-status-changes-and-allow-admins-to-resolve-close-disputes-with-a-resolution-note",
-      "featureTitle": "Implement dispute resolution as a functional ticketing workflow: allow customers/mechanics/garage owners to open disputes tied to a booking/listing, exchange non-real-time updates (comments/status changes), and allow admins to resolve/close disputes with a resolution note.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/admin/DisputeTools.tsx",
-        "frontend/src/pages/dashboards/AdminDashboard.tsx",
-        "frontend/src/pages/dashboards/CustomerDashboard.tsx",
+        "frontend/src/pages/admin/EscrowTransactions.tsx",
         "frontend/src/pages/disputes/Disputes.tsx"
       ],
       "components": [
@@ -208,18 +155,18 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-20"
+        "REQ-44"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-simulated-coming-soon-ux-for-unsupported-in-app-messaging-push-notifications-real-time-tracking-mechanic-en-route-and-escrow-payment-system-each-must-be-clearly-labeled-coming-soon-and-must-not-imply-actual-delivery-of-those-capabilities",
-      "featureTitle": "Add simulated “Coming Soon” UX for unsupported in-app messaging, push notifications, real-time tracking (mechanic en route), and escrow payment system; each must be clearly labeled Coming Soon and must not imply actual delivery of those capabilities.",
+      "featureId": "feature-remove-or-refactor-payment-messaging-escrow-related-coming-soon-and-simulated-flow-ui-so-the-app-contains-no-coming-soon-placeholders-for-the-scopes-covered-here-payments-and-notifications-including-removing-simulated-modals-from-payment-selection-and-removing-redirecting-the-escrow-related-coming-soon-hub-entry-points",
+      "featureTitle": "Remove or refactor payment/messaging/escrow-related “Coming Soon” and simulated-flow UI so the app contains no “Coming Soon” placeholders for the scopes covered here (payments and notifications), including removing simulated modals from payment selection and removing/redirecting the escrow-related Coming Soon hub entry points.",
       "files": [
-        "frontend/src/App.tsx",
+        "frontend/src/components/booking/GarageBookingModal.tsx",
         "frontend/src/components/layout/TopNav.tsx",
-        "frontend/src/pages/coming-soon/UnsupportedFeaturesHub.tsx",
-        "frontend/src/pages/garages/GarageBrowse.tsx"
+        "frontend/src/components/payments/PaymentMethodSelector.tsx",
+        "frontend/src/pages/coming-soon/UnsupportedFeaturesHub.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -231,241 +178,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-21"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-revenue-model-integration-as-functional-backend-calculations-and-admin-reporting-store-platform-fee-commission-settings-mechanic-booking-fee-15-25-garage-rental-commission-10-20-apply-fee-calculation-to-bookings-rentals-and-present-totals-in-an-admin-revenue-tracking-view",
-      "featureTitle": "Implement Revenue Model Integration as functional backend calculations and admin reporting: store platform fee/commission settings (mechanic booking fee 15–25%, garage rental commission 10–20%), apply fee calculation to bookings/rentals, and present totals in an admin revenue tracking view.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/admin/RevenueTracking.tsx",
-        "frontend/src/pages/dashboards/AdminDashboard.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-22"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-featured-mechanic-boost-option-as-a-functional-feature-flag-with-pricing-metadata-no-external-payment-mechanics-can-opt-in-or-request-a-featured-boost-admin-can-approve-enable-it-and-browse-results-reflect-featured-mechanics-via-a-visible-badge-and-sorting-priority",
-      "featureTitle": "Implement featured mechanic boost option as a functional feature flag with pricing metadata (no external payment): mechanics can opt-in (or request) a featured boost, admin can approve/enable it, and browse results reflect featured mechanics via a visible badge and sorting priority.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/mechanics/MechanicCard.tsx",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/admin/FeaturedBoostManagement.tsx",
-        "frontend/src/pages/dashboards/AdminDashboard.tsx",
-        "frontend/src/pages/dashboards/MechanicDashboard.tsx",
-        "frontend/src/pages/mechanics/MechanicBrowse.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-23"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-emergency-service-surge-pricing-as-a-functional-pricing-modifier-for-mechanic-services-mechanics-can-toggle-emergency-availability-and-define-a-surge-multiplier-percent-within-allowed-bounds-customer-booking-quote-views-show-the-adjusted-price-when-emergency-is-selected",
-      "featureTitle": "Implement emergency service surge pricing as a functional pricing modifier for mechanic services: mechanics can toggle emergency availability and define a surge multiplier/percent within allowed bounds; customer booking/quote views show the adjusted price when emergency is selected.",
-      "files": [
-        "frontend/src/components/booking/GarageBookingModal.tsx",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/dashboards/MechanicDashboard.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-24"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-mechanic-monthly-pro-membership-and-customer-diy-membership-as-functional-membership-states-no-external-billing-allow-users-to-activate-deactivate-membership-status-persist-it-and-apply-membership-rules-such-as-discounted-garage-rental-pricing-for-diy-membership-clearly-shown-in-pricing-breakdown",
-      "featureTitle": "Implement mechanic monthly pro membership and customer DIY membership as functional membership states (no external billing): allow users to activate/deactivate membership status, persist it, and apply membership rules such as discounted garage rental pricing for DIY membership (clearly shown in pricing breakdown).",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/booking/GarageBookingModal.tsx",
-        "frontend/src/components/booking/PricingBreakdown.tsx",
-        "frontend/src/components/layout/TopNav.tsx",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/settings/MembershipSettings.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-25"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-enhance-admin-dashboard-add-a-user-verification-panel-queue-detail-waitlist-management-and-a-geo-heatmap-of-demand-based-on-stored-searches-bookings-aggregated-by-location-string-no-external-maps",
-      "featureTitle": "Enhance Admin Dashboard: add a user verification panel (queue + detail), waitlist management, and a geo heatmap of demand based on stored searches/bookings aggregated by location string (no external maps).",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/admin/AdminRouteGuard.tsx",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/admin/DemandHeatmap.tsx",
-        "frontend/src/pages/admin/WaitlistManagement.tsx",
-        "frontend/src/pages/dashboards/AdminDashboard.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-26"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-mobile-first-fix-my-car-entry-experience-a-one-tap-cta-that-opens-an-intake-flow-collecting-issue-description-and-media-upload-photo-video-then-routes-the-user-to-suggested-next-steps-estimated-cost-nearby-mechanics-nearby-rental-bays-ai-pre-diagnosis-suggestions-must-be-simulated-and-labeled-coming-soon",
-      "featureTitle": "Add mobile-first “Fix My Car” entry experience: a one-tap CTA that opens an intake flow collecting issue description and media upload (photo/video), then routes the user to suggested next steps (estimated cost, nearby mechanics, nearby rental bays). AI pre-diagnosis suggestions must be simulated and labeled Coming Soon.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/pages/Landing.tsx",
-        "frontend/src/pages/dashboards/CustomerDashboard.tsx",
-        "frontend/src/pages/fix-my-car/FixMyCarIntake.tsx",
-        "frontend/src/pages/fix-my-car/FixMyCarResults.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-27"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-desktop-focused-browse-ux-enhancements-side-by-side-compare-mechanics-select-up-to-n-mechanics-to-compare-an-advanced-filtering-panel-layout-and-a-map-list-split-screen-mode-for-garages-and-or-mechanics-where-map-content-remains-simulated-coming-soon-if-not-functional",
-      "featureTitle": "Add desktop-focused browse UX enhancements: side-by-side compare mechanics (select up to N mechanics to compare), an advanced filtering panel layout, and a map+list split-screen mode for garages and/or mechanics where map content remains simulated/Coming Soon if not functional.",
-      "files": [
-        "frontend/src/components/mechanics/MechanicFilters.tsx",
-        "frontend/src/pages/garages/GarageBrowse.tsx",
-        "frontend/src/pages/mechanics/MechanicBrowse.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-28"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-clear-coming-soon-labeling-and-simulated-ux-for-apple-pay-google-pay-payment-options-across-checkout-booking-areas-without-integrating-any-external-payment-provider",
-      "featureTitle": "Add clear “Coming Soon” labeling and simulated UX for Apple Pay / Google Pay payment options across checkout/booking areas, without integrating any external payment provider.",
-      "files": [
-        "frontend/src/components/booking/GarageBookingModal.tsx",
-        "frontend/src/components/payments/PaymentMethodSelector.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-29"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-a-rating-penalty-system-for-no-shows-as-functional-backend-policy-allow-a-booking-rental-to-be-marked-as-no-show-with-role-appropriate-permissions-automatically-apply-a-penalty-record-to-the-responsible-party-and-reflect-it-in-admin-reporting-and-user-dashboards",
-      "featureTitle": "Implement a rating penalty system for no-shows as functional backend policy: allow a booking/rental to be marked as no-show (with role-appropriate permissions), automatically apply a penalty record to the responsible party, and reflect it in admin reporting and user dashboards.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/admin/NoShowPenalties.tsx",
-        "frontend/src/pages/dashboards/AdminDashboard.tsx",
-        "frontend/src/pages/dashboards/CustomerDashboard.tsx",
-        "frontend/src/pages/dashboards/MechanicDashboard.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-30"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-calendar-drag-and-drop-booking-ux-on-desktop-as-a-simulated-interaction-unless-full-calendar-mutation-support-already-exists-for-that-flow-if-simulated-label-it-coming-soon-and-ensure-it-does-not-break-existing-availability-booking-views",
-      "featureTitle": "Add calendar drag-and-drop booking UX on desktop as a simulated interaction unless full calendar mutation support already exists for that flow; if simulated, label it Coming Soon and ensure it does not break existing availability/booking views.",
-      "files": [
-        "frontend/src/pages/dashboards/GarageOwnerDashboard.tsx",
-        "frontend/src/pages/dashboards/MechanicDashboard.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-31"
+        "REQ-45"
       ],
       "confidence": "high"
     }

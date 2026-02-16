@@ -1,7 +1,8 @@
-import { Link, useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
 import { useInternetIdentity } from '../../hooks/useInternetIdentity';
 import { useGetCallerUserProfile, useIsCallerAdmin } from '../../hooks/useQueries';
-import LoginButton from '../auth/LoginButton';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -12,100 +13,112 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Wrench, Warehouse, User, Shield, Clock } from 'lucide-react';
-import { useState } from 'react';
-import { Role } from '../../backend';
+import {
+  User,
+  LogOut,
+  Menu,
+  Wrench,
+  Warehouse,
+  LayoutDashboard,
+  Shield,
+  Bell,
+} from 'lucide-react';
+import NotificationDropdown from '../notifications/NotificationDropdown';
 
 export default function TopNav() {
-  const { identity } = useInternetIdentity();
+  const navigate = useNavigate();
+  const { identity, clear, login } = useInternetIdentity();
   const { data: userProfile } = useGetCallerUserProfile();
   const { data: isAdmin } = useIsCallerAdmin();
-  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isAuthenticated = !!identity;
-  const hasRole = (role: Role) => userProfile?.roles.includes(role) || false;
 
-  const NavLinks = () => (
-    <>
-      <Link to="/mechanics">
-        <Button variant="ghost" size="sm">
-          <Wrench className="mr-2 h-4 w-4" />
-          Find Mechanics
-        </Button>
-      </Link>
-      <Link to="/garages">
-        <Button variant="ghost" size="sm">
-          <Warehouse className="mr-2 h-4 w-4" />
-          Rent Garages
-        </Button>
-      </Link>
-    </>
-  );
+  const handleLogout = async () => {
+    await clear();
+    queryClient.clear();
+    navigate({ to: '/' });
+  };
+
+  const menuItems = [
+    { label: 'Find Mechanics', path: '/mechanics', icon: Wrench },
+    { label: 'Browse Garages', path: '/garages', icon: Warehouse },
+  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link to="/" className="flex items-center space-x-2">
-            <img src="/assets/generated/ndnp-logo.dim_512x512.png" alt="NDNP" className="h-10 w-10" />
-            <span className="font-bold text-xl hidden sm:inline-block">NDNP</span>
-          </Link>
-          <nav className="hidden md:flex items-center gap-2">
-            <NavLinks />
+          <button
+            onClick={() => navigate({ to: '/' })}
+            className="flex items-center gap-2 font-bold text-xl hover:opacity-80 transition-opacity"
+          >
+            <img src="/assets/generated/ndnp-logo.dim_512x512.png" alt="NDNP" className="h-8 w-8" />
+            <span>NDNP</span>
+          </button>
+
+          <nav className="hidden md:flex items-center gap-6">
+            {menuItems.map((item) => (
+              <button
+                key={item.path}
+                onClick={() => navigate({ to: item.path })}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {item.label}
+              </button>
+            ))}
           </nav>
         </div>
 
         <div className="flex items-center gap-2">
-          {isAuthenticated && userProfile && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <User className="mr-2 h-4 w-4" />
-                  <span className="hidden sm:inline">{userProfile.name}</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>My Dashboards</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {hasRole(Role.customer) && (
+          {isAuthenticated ? (
+            <>
+              <NotificationDropdown />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>
+                    {userProfile?.name || 'My Account'}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate({ to: '/dashboard/customer' })}>
-                    Customer Dashboard
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    Dashboard
                   </DropdownMenuItem>
-                )}
-                {hasRole(Role.mechanic) && (
-                  <DropdownMenuItem onClick={() => navigate({ to: '/dashboard/mechanic' })}>
-                    Mechanic Dashboard
+                  <DropdownMenuItem onClick={() => navigate({ to: '/notifications' })}>
+                    <Bell className="mr-2 h-4 w-4" />
+                    Notifications
                   </DropdownMenuItem>
-                )}
-                {hasRole(Role.garageOwner) && (
-                  <DropdownMenuItem onClick={() => navigate({ to: '/dashboard/garage-owner' })}>
-                    Garage Owner Dashboard
+                  <DropdownMenuItem onClick={() => navigate({ to: '/payments/transactions' })}>
+                    <Wrench className="mr-2 h-4 w-4" />
+                    Transactions
                   </DropdownMenuItem>
-                )}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate({ to: '/settings/membership' })}>
-                  Membership Settings
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate({ to: '/coming-soon' })}>
-                  <Clock className="mr-2 h-4 w-4" />
-                  Coming Soon Features
-                </DropdownMenuItem>
-                {isAdmin && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => navigate({ to: '/dashboard/admin' })}>
-                      <Shield className="mr-2 h-4 w-4" />
-                      Admin Dashboard
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => navigate({ to: '/dashboard/admin' })}>
+                        <Shield className="mr-2 h-4 w-4" />
+                        Admin Dashboard
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          ) : (
+            <Button onClick={login}>Sign In</Button>
           )}
-          <div className="hidden md:block">
-            <LoginButton />
-          </div>
+
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild className="md:hidden">
               <Button variant="ghost" size="icon">
@@ -114,10 +127,19 @@ export default function TopNav() {
             </SheetTrigger>
             <SheetContent side="right">
               <nav className="flex flex-col gap-4 mt-8">
-                <NavLinks />
-                <div className="pt-4 border-t">
-                  <LoginButton />
-                </div>
+                {menuItems.map((item) => (
+                  <button
+                    key={item.path}
+                    onClick={() => {
+                      navigate({ to: item.path });
+                      setMobileMenuOpen(false);
+                    }}
+                    className="flex items-center gap-2 text-lg font-medium hover:text-primary transition-colors"
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {item.label}
+                  </button>
+                ))}
               </nav>
             </SheetContent>
           </Sheet>

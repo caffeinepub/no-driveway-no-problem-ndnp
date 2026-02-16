@@ -1,103 +1,103 @@
-import { Link } from '@tanstack/react-router';
-import { useIsCallerAdmin } from '../../hooks/useQueries';
+import { useNavigate } from '@tanstack/react-router';
 import PageLayout from '../../components/layout/PageLayout';
 import { PageTitle } from '../../components/common/Typography';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
-  Shield,
-  Star,
   Users,
-  CheckCircle,
-  FileText,
-  AlertCircle,
+  FileCheck,
+  Shield,
+  MessageSquare,
+  Star,
   DollarSign,
   TrendingUp,
-  UserCheck,
-  ListChecks,
+  Zap,
+  Clock,
   MapPin,
-  Ban,
+  AlertTriangle,
 } from 'lucide-react';
 
 export default function AdminDashboard() {
-  const { data: isAdmin } = useIsCallerAdmin();
+  const navigate = useNavigate();
 
-  if (!isAdmin) {
-    return null;
-  }
-
-  const adminTools = [
+  const tools = [
     {
       title: 'Marketplace Moderation',
-      description: 'Review and approve mechanic profiles and garage listings',
-      icon: Shield,
-      link: '/admin/moderation',
+      description: 'Review and approve mechanic and garage listings',
+      icon: FileCheck,
+      path: '/admin/moderation',
     },
     {
       title: 'Review Moderation',
-      description: 'Approve or hide user reviews',
+      description: 'Moderate user reviews and ratings',
       icon: Star,
-      link: '/admin/reviews',
+      path: '/admin/reviews',
     },
     {
       title: 'User Role Management',
-      description: 'Manage user roles and permissions',
+      description: 'View and understand user role assignments',
       icon: Users,
-      link: '/admin/roles',
+      path: '/admin/roles',
     },
     {
-      title: 'Identity Verification',
-      description: 'Review and approve identity verification submissions',
-      icon: UserCheck,
-      link: '/admin/verification',
+      title: 'Verification Queue',
+      description: 'Review mechanic certifications and documents',
+      icon: Shield,
+      path: '/admin/verification',
     },
     {
       title: 'Insurance Review',
       description: 'Review and approve insurance documents',
-      icon: CheckCircle,
-      link: '/admin/insurance',
+      icon: FileCheck,
+      path: '/admin/insurance',
     },
     {
       title: 'Waiver Records',
-      description: 'View signed waiver records',
-      icon: FileText,
-      link: '/admin/waivers',
+      description: 'View signed liability waivers',
+      icon: FileCheck,
+      path: '/admin/waivers',
     },
     {
-      title: 'Dispute Resolution',
+      title: 'Dispute Tools',
       description: 'Manage and resolve user disputes',
-      icon: AlertCircle,
-      link: '/admin/disputes',
+      icon: MessageSquare,
+      path: '/admin/disputes',
+    },
+    {
+      title: 'Escrow Transactions',
+      description: 'Manage escrow payments and fund releases',
+      icon: DollarSign,
+      path: '/admin/escrow-transactions',
     },
     {
       title: 'Revenue Tracking',
-      description: 'View revenue and configure fee rates',
-      icon: DollarSign,
-      link: '/admin/revenue',
+      description: 'Monitor platform revenue and commissions',
+      icon: TrendingUp,
+      path: '/admin/revenue',
     },
     {
       title: 'Featured Boost Management',
-      description: 'Approve and manage featured mechanic boosts',
-      icon: TrendingUp,
-      link: '/admin/featured-boost',
+      description: 'Manage featured listings and boosts',
+      icon: Zap,
+      path: '/admin/featured-boost',
     },
     {
       title: 'Waitlist Management',
-      description: 'Manage waitlist entries and invitations',
-      icon: ListChecks,
-      link: '/admin/waitlist',
+      description: 'Manage provider waitlist and approvals',
+      icon: Clock,
+      path: '/admin/waitlist',
     },
     {
       title: 'Demand Heatmap',
-      description: 'View demand aggregation by location',
+      description: 'View service demand by location',
       icon: MapPin,
-      link: '/admin/demand',
+      path: '/admin/demand',
     },
     {
       title: 'No-Show Penalties',
-      description: 'Review and manage no-show penalties',
-      icon: Ban,
-      link: '/admin/no-show-penalties',
+      description: 'Manage no-show penalties and resolutions',
+      icon: AlertTriangle,
+      path: '/admin/no-show-penalties',
     },
   ];
 
@@ -105,24 +105,25 @@ export default function AdminDashboard() {
     <PageLayout>
       <div className="space-y-6">
         <PageTitle>Admin Dashboard</PageTitle>
-        <p className="text-muted-foreground">
-          Manage all aspects of the NDNP marketplace
-        </p>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {adminTools.map((tool) => (
-            <Card key={tool.link} className="hover:border-primary transition-colors">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {tools.map((tool) => (
+            <Card key={tool.path} className="hover:shadow-lg transition-shadow">
               <CardHeader>
-                <tool.icon className="h-8 w-8 text-primary mb-2" />
-                <CardTitle className="text-lg">{tool.title}</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <tool.icon className="h-5 w-5" />
+                  {tool.title}
+                </CardTitle>
                 <CardDescription>{tool.description}</CardDescription>
               </CardHeader>
               <CardContent>
-                <Link to={tool.link}>
-                  <Button variant="outline" className="w-full">
-                    Open
-                  </Button>
-                </Link>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => navigate({ to: tool.path })}
+                >
+                  Open Tool
+                </Button>
               </CardContent>
             </Card>
           ))}

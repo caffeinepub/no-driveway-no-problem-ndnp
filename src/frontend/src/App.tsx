@@ -24,11 +24,14 @@ import FeaturedBoostManagement from './pages/admin/FeaturedBoostManagement';
 import WaitlistManagement from './pages/admin/WaitlistManagement';
 import DemandHeatmap from './pages/admin/DemandHeatmap';
 import NoShowPenalties from './pages/admin/NoShowPenalties';
+import EscrowTransactions from './pages/admin/EscrowTransactions';
 import IdentityVerification from './pages/trust-safety/IdentityVerification';
 import Disputes from './pages/disputes/Disputes';
 import MembershipSettings from './pages/settings/MembershipSettings';
 import FixMyCarIntake from './pages/fix-my-car/FixMyCarIntake';
 import FixMyCarResults from './pages/fix-my-car/FixMyCarResults';
+import TransactionHistory from './pages/payments/TransactionHistory';
+import NotificationCenter from './pages/notifications/NotificationCenter';
 import UnsupportedFeaturesHub from './pages/coming-soon/UnsupportedFeaturesHub';
 import AccessDenied from './pages/AccessDenied';
 import TopNav from './components/layout/TopNav';
@@ -243,6 +246,16 @@ const noShowPenaltiesRoute = createRoute({
   ),
 });
 
+const escrowTransactionsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/escrow-transactions',
+  component: () => (
+    <AdminRouteGuard>
+      <EscrowTransactions />
+    </AdminRouteGuard>
+  ),
+});
+
 const identityVerificationRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/trust-safety/identity-verification',
@@ -271,6 +284,18 @@ const fixMyCarResultsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/fix-my-car/results',
   component: FixMyCarResults,
+});
+
+const transactionHistoryRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/payments/transactions',
+  component: TransactionHistory,
+});
+
+const notificationCenterRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/notifications',
+  component: NotificationCenter,
 });
 
 const unsupportedFeaturesRoute = createRoute({
@@ -309,11 +334,14 @@ const routeTree = rootRoute.addChildren([
   waitlistRoute,
   demandHeatmapRoute,
   noShowPenaltiesRoute,
+  escrowTransactionsRoute,
   identityVerificationRoute,
   disputesRoute,
   membershipSettingsRoute,
   fixMyCarIntakeRoute,
   fixMyCarResultsRoute,
+  transactionHistoryRoute,
+  notificationCenterRoute,
   unsupportedFeaturesRoute,
   accessDeniedRoute,
 ]);

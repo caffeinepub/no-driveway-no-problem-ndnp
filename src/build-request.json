@@ -1,418 +1,297 @@
 {
   "kind": "build_request",
-  "title": "DIY Support, Trust & Safety, Revenue Systems, Admin Enhancements, and Coming-Soon UX for Unsupported Features",
+  "title": "Implement internal escrow ledger payments, Internet Identity RBAC, and in-app notifications (no Coming Soon)",
   "projectName": "NDNP Marketplace",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-12",
-      "text": "Add a new DIY Support Layer entry point across relevant customer-facing pages: render a prominent “Need Help While DIY?” button on Garage Detail pages and in the customer DIY/garage booking flow, opening a dedicated DIY Support panel/modal.",
+      "id": "REQ-32",
+      "text": "Implement Internet Identity–only role-based access control (RBAC) in the backend using a persisted role registry mapping Principal → Role (Admin, Mechanic, Customer, Garage Owner), and enforce it across all privileged backend methods.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-recent-auth-1"
+        ],
+        "quotes": [
+          "Keep authentication Internet Identity only.\n\nImplement:\n\nRole-based access control (RBAC)\n\nBackend role registry mapping Identity → Role (Admin, Mechanic, Customer, Garage Owner)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend persists role assignments per Principal and exposes query methods to read the caller’s role(s).",
+        "Any backend method intended for admins/mechanics/garage owners rejects unauthorized callers with an explicit Unauthorized error (no silent failure).",
+        "User profile saving cannot be used to self-assign the Admin role."
+      ]
+    },
+    {
+      "id": "REQ-33",
+      "text": "Add a backend-managed Admin whitelist for assigning the Admin role, and expose admin-check endpoints that the frontend can use for route protection.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-recent-auth-2"
+        ],
+        "quotes": [
+          "Admin role assigned via backend whitelist",
+          "Middleware protecting admin routes",
+          "401 Unauthorized for invalid access attempts"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Only principals present in the backend whitelist can be treated as Admin.",
+        "actor.isCallerAdmin() (or equivalent) returns true only for whitelisted principals.",
+        "Unauthorized access attempts to admin-only backend methods trap with Unauthorized (mapped to 401-like handling in UI)."
+      ]
+    },
+    {
+      "id": "REQ-34",
+      "text": "Implement a provider-agnostic internal escrow ledger system in the backend with persisted transaction records and escrow account tracking per booking.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-recent-payments-1"
+        ],
+        "quotes": [
+          "Replace all external Stripe/PayPal integrations with a structured internal escrow ledger system.\n\nImplement:\n\nTransaction model with states: Pending → Held → Released → Refunded → Disputed\n\nEscrow account tracking per booking"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend defines and persists a Transaction model including: booking reference, payer, payee, amount, platform fee, provider=INTERNAL_LEDGER, providerReferenceId optional, and status lifecycle compatible with Pending→Held→Released→Refunded→Disputed.",
+        "Backend maintains escrow accounting per booking (held balance and ledger entries sufficient to audit credits/debits).",
+        "All payment-related state changes are persisted and queryable after page refresh / reload."
+      ]
+    },
+    {
+      "id": "REQ-35",
+      "text": "Implement admin-controlled escrow actions in the backend: “Release Funds” and “Issue Refund”, including state-transition validation and auditability.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-recent-payments-2"
+        ],
+        "quotes": [
+          "Admin-controlled “Release Funds” and “Issue Refund” actions"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Only Admin can release or refund funds.",
+        "Release and refund operations validate current transaction status and reject invalid transitions (e.g., cannot release an already refunded transaction).",
+        "Each release/refund operation results in persisted ledger entries and an updated Transaction status."
+      ]
+    },
+    {
+      "id": "REQ-36",
+      "text": "Enforce booking lifecycle gating in the backend so that a booking cannot be moved to Completed unless its escrow transaction is in Released state.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-recent-payments-3"
+        ],
+        "quotes": [
+          "Booking cannot move to Completed unless funds are Released"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend booking status update to Completed fails if associated transaction is not Released.",
+        "When funds are Released successfully, booking can be moved to Completed via the existing booking flow logic.",
+        "The rule applies consistently for all booking types that require payment (garage rental, mechanic service, combined)."
+      ]
+    },
+    {
+      "id": "REQ-37",
+      "text": "Design the payment backend interfaces to be payment-provider-agnostic so that a future Stripe Connect adapter can be added without changing booking flow or frontend UI component contracts.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-recent-payments-4"
+        ],
+        "quotes": [
+          "Design the payment architecture so that external payment APIs (e.g., Stripe Connect) can later replace the escrow release logic without modifying booking flow or UI components.",
+          "Never store “Stripe logic” in your business tables."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Transaction records include a provider enum and optional provider reference fields, but business logic does not require Stripe-specific fields.",
+        "Frontend-facing API responses for payment/escrow do not expose provider-specific behavior; provider is informational.",
+        "Switching provider from INTERNAL_LEDGER to another provider can be done behind backend method boundaries (no frontend changes required)."
+      ]
+    },
+    {
+      "id": "REQ-38",
+      "text": "Replace simulated payment UI with functional internal-ledger payment flow in the booking experience, including explicit “Test Mode – Internal Ledger Active” labeling and no simulated card entry.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-recent-payments-5"
         ],
         "quotes": [
-          "Add: “Need Help While DIY?” button"
+          "Clear “Test Mode – Internal Ledger Active” labeling in UI",
+          "Do NOT simulate credit card entry or external API calls."
         ]
       },
       "acceptanceCriteria": [
-        "On Garage Detail page, a visible “Need Help While DIY?” action is present on both mobile and desktop breakpoints.",
-        "Clicking the button opens a DIY Support UI surface (page, panel, or modal) without navigation errors.",
-        "The DIY Support UI surface can be reached by authenticated users; unauthenticated users are prompted to sign in."
+        "PaymentMethodSelector no longer shows Apple Pay / Google Pay Coming Soon options or simulated modals, and does not show simulated “future payment processing” text.",
+        "GarageBookingModal confirm flow is wired end-to-end: user action triggers backend payment/booking mutations, updates persisted state, and updates UI based on responses (no “(Simulated)” toasts).",
+        "UI displays “Test Mode – Internal Ledger Active” wherever the user is confirming payment/escrow for a booking."
       ]
     },
     {
-      "id": "REQ-13",
-      "text": "Implement tool recommendations for a selected repair scenario within the DIY Support panel: allow the user to choose a repair type/category and receive a structured list of recommended tools and consumables that can be saved to the user’s DIY session.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Tool recommendations for selected repair"
-        ]
-      },
-      "acceptanceCriteria": [
-        "DIY Support panel includes a repair selector and shows a generated list of recommended tools/consumables.",
-        "Users can save the recommended tool list to the current DIY support session and see it on refresh.",
-        "Backend persists DIY support sessions (or equivalent) per user so tool recommendations are not lost on reload."
-      ]
-    },
-    {
-      "id": "REQ-14",
-      "text": "Implement a repair cost estimator in the DIY Support panel: collect basic inputs (repair type, vehicle info as free-text, parts cost estimate, labor time estimate) and return a calculated estimate breakdown; store estimates in the user’s DIY session history.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Repair cost estimator",
-          "Show: Estimated cost"
-        ]
-      },
-      "acceptanceCriteria": [
-        "DIY Support panel includes an estimator form and displays a breakdown (parts, labor, total) after submission.",
-        "Estimates are stored and listed in a “Recent estimates” section for the authenticated user.",
-        "Estimator calculations are deterministic and performed in backend logic (not only UI)."
-      ]
-    },
-    {
-      "id": "REQ-15",
-      "text": "Add “Add mechanic assistance mid-booking” to the garage rental booking experience as a functional add-on selection (without real-time communication): users can request assistance, choose assistance type, and submit the request; the request is stored and visible in both customer and mechanic dashboards.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Add mechanic assistance mid-booking"
-        ]
-      },
-      "acceptanceCriteria": [
-        "During a garage rental booking flow (or booking detail), the user can add a mechanic assistance add-on and submit it.",
-        "Submitted assistance requests are persisted in backend state and linked to the user and the booking (or session).",
-        "Mechanic dashboard shows a list of incoming assistance requests with status (e.g., requested/accepted/declined/completed).",
-        "Customer dashboard shows submitted assistance requests and their status."
-      ]
-    },
-    {
-      "id": "REQ-16",
-      "text": "Create simulated “Coming Soon” UX flows for unsupported on-demand mechanic consultation via video call upsell, clearly labeled as Coming Soon and non-functional beyond UI progression screens.",
+      "id": "REQ-39",
+      "text": "Create user-visible transaction history and booking payment status UI surfaces (per booking and per user) powered by backend queries.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-recent-payments-6"
         ],
         "quotes": [
-          "On-demand mechanic consultation (video call upsell)",
-          "I would like those unsupport features to be labelled as a coming soon features - and make the area show simulated UX flows."
+          "Transaction model with states: Pending → Held → Released → Refunded → Disputed",
+          "Escrow account tracking per booking"
         ]
       },
       "acceptanceCriteria": [
-        "DIY Support UI includes a “Video consultation” option that is clearly marked “Coming Soon”.",
-        "Selecting the option shows a simulated multi-step flow (e.g., select duration, confirm, success) with no attempt to start an actual call.",
-        "All relevant UI surfaces include consistent Coming Soon labeling and do not crash when used."
+        "Signed-in users can view payment status for their bookings (Held/Released/Refunded/Disputed) in an appropriate dashboard section.",
+        "Users can view a transaction history list (at minimum: booking reference, amount, status, timestamps).",
+        "All displayed payment data comes from backend queries (no hardcoded placeholder rows)."
       ]
     },
     {
-      "id": "REQ-17",
-      "text": "Implement Trust & Safety: add user identity verification submission as a functional workflow (document upload + status), including storage of verification status and admin review/approval/rejection actions.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "5️⃣ Trust & Safety System",
-          "ID verification",
-          "User verification panel",
-          "I want this to be a fully function system."
-        ]
-      },
-      "acceptanceCriteria": [
-        "Authenticated users can upload identity verification documents and see their verification status (e.g., Not submitted / Pending / Verified / Rejected).",
-        "Admin can view a verification queue/panel and set user verification status to approved/rejected with an optional note.",
-        "Verification status is persisted in backend state and visible after reload.",
-        "Non-admin users cannot access admin verification actions."
-      ]
-    },
-    {
-      "id": "REQ-18",
-      "text": "Implement Trust & Safety: support insurance upload as a functional workflow for both mechanics and garage owners (where applicable), including a persisted insurance document reference and status visible to users and admins.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Insurance upload"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Mechanics and garage owners can upload an insurance document and see its current status.",
-        "Admin can view uploaded insurance documents (or references) and mark them approved/rejected.",
-        "The workflow uses the existing file/media upload handling patterns and persists results in backend state."
-      ]
-    },
-    {
-      "id": "REQ-19",
-      "text": "Implement waiver digital signing as a functional workflow for garage rentals: users can view a waiver text, accept/sign (typed name + checkbox + timestamp), and the signed waiver record is stored and viewable in booking details and admin tools.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Waiver digital signing"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Garage rental flows that require a waiver present a waiver text and signature/acceptance UI before completion.",
-        "A signed waiver record (signer, timestamp, acceptance) is persisted and can be displayed later for the customer and admin.",
-        "If a garage listing has waiverRequired=true, the UI enforces signing before confirming booking actions tied to that flow."
-      ]
-    },
-    {
-      "id": "REQ-20",
-      "text": "Implement dispute resolution as a functional ticketing workflow: allow customers/mechanics/garage owners to open disputes tied to a booking/listing, exchange non-real-time updates (comments/status changes), and allow admins to resolve/close disputes with a resolution note.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Dispute resolution flow",
-          "Dispute resolution tools"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Users can create a dispute with category, description, and optional attachment reference, and see it in their dashboard.",
-        "Dispute tickets have statuses (e.g., Open/Under Review/Resolved/Closed) and a timeline of updates stored in backend state.",
-        "Admin dashboard includes a dispute tools page to review disputes, change status, and add a resolution note.",
-        "No real-time messaging is implemented; updates appear on refresh/refetch."
-      ]
-    },
-    {
-      "id": "REQ-21",
-      "text": "Add simulated “Coming Soon” UX for unsupported in-app messaging, push notifications, real-time tracking (mechanic en route), and escrow payment system; each must be clearly labeled Coming Soon and must not imply actual delivery of those capabilities.",
+      "id": "REQ-40",
+      "text": "Add Admin UI to view transactions and perform escrow actions (Release Funds / Issue Refund) with proper authorization handling and state refresh.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-recent-admin-1"
         ],
         "quotes": [
-          "In-app messaging",
-          "Push notifications for booking confirmations",
-          "Real-time tracking when mechanic is en route",
-          "Escrow payment system",
-          "I would like those unsupport features to be labelled as a coming soon features - and make the area show simulated UX flows."
+          "Admin-controlled “Release Funds” and “Issue Refund” actions",
+          "Role-based access control protecting admin pages."
         ]
       },
       "acceptanceCriteria": [
-        "Any UI entry points added for messaging, push notifications, real-time tracking, or escrow show “Coming Soon” badges/labels.",
-        "Clicking these entry points shows simulated screens only, and no backend calls are required for unsupported features.",
-        "Existing “Map view coming soon” in Garage Browse remains consistent with this Coming Soon pattern."
+        "An admin-facing view lists transactions with filters/status indicators and provides action buttons for Release/Refund where valid.",
+        "Attempting admin actions as a non-admin results in an access denied UI path (and backend denies).",
+        "After admin action succeeds, affected booking/payment UI updates (React Query invalidation/refetch) without requiring a hard reload."
       ]
     },
     {
-      "id": "REQ-22",
-      "text": "Implement Revenue Model Integration as functional backend calculations and admin reporting: store platform fee/commission settings (mechanic booking fee 15–25%, garage rental commission 10–20%), apply fee calculation to bookings/rentals, and present totals in an admin revenue tracking view.",
+      "id": "REQ-41",
+      "text": "Implement a fully functional in-app notification system (backend + frontend) with notification types: BookingCreated, BookingConfirmed, FundsReleased, DisputeOpened, AccountSuspended.",
       "target": "both",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-recent-notifications-1"
         ],
         "quotes": [
-          "6️⃣ Revenue Model Integration",
-          "15–25% mechanic booking fee",
-          "10–20% garage rental commission",
-          "Revenue tracking"
+          "Replace all email/SMS notifications with a fully functional in-app notification center.\n\nImplement:\n\nNotification model (BookingCreated, BookingConfirmed, FundsReleased, DisputeOpened, AccountSuspended)"
         ]
       },
       "acceptanceCriteria": [
-        "Backend supports configurable fee rates within the specified ranges and persists the selected configuration.",
-        "For applicable bookings/rentals, the system computes platform fee amounts and stores them as part of a revenue record or booking summary.",
-        "Admin dashboard includes a revenue tracking page showing totals and basic breakdowns (e.g., by type, date range if available).",
-        "Fee calculations are testable and consistent across reloads."
+        "Backend persists notifications per user (read/unread state, created timestamp, type, reference id).",
+        "Backend emits notifications on relevant events (at minimum: booking creation/confirmation, funds release, dispute opened, account suspension).",
+        "Frontend can fetch notifications list and unread count and mark notifications as read."
       ]
     },
     {
-      "id": "REQ-23",
-      "text": "Implement featured mechanic boost option as a functional feature flag with pricing metadata (no external payment): mechanics can opt-in (or request) a featured boost, admin can approve/enable it, and browse results reflect featured mechanics via a visible badge and sorting priority.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Featured mechanic boost option"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Mechanic dashboard allows requesting/enabling a “Featured boost” state (with clear note that payment is not processed in-app).",
-        "Admin can approve/enable/disable featured status for a mechanic.",
-        "Mechanic cards/public profile show a “Featured” badge when enabled.",
-        "Mechanic browse results can optionally prioritize featured mechanics (e.g., top of list) without breaking existing filtering."
-      ]
-    },
-    {
-      "id": "REQ-24",
-      "text": "Implement emergency service surge pricing as a functional pricing modifier for mechanic services: mechanics can toggle emergency availability and define a surge multiplier/percent within allowed bounds; customer booking/quote views show the adjusted price when emergency is selected.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Emergency service surge pricing"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Mechanic dashboard includes a toggle for “Emergency service” and a configurable surge setting.",
-        "Customer-facing booking/quote UI shows base rate and emergency-adjusted rate when emergency is chosen.",
-        "Backend persists emergency settings and computes adjusted pricing consistently."
-      ]
-    },
-    {
-      "id": "REQ-25",
-      "text": "Implement mechanic monthly pro membership and customer DIY membership as functional membership states (no external billing): allow users to activate/deactivate membership status, persist it, and apply membership rules such as discounted garage rental pricing for DIY membership (clearly shown in pricing breakdown).",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Monthly pro membership for mechanics",
-          "DIY membership for discounted rentals"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Users can see and manage membership status in an appropriate dashboard/settings area.",
-        "Membership state persists in backend and affects UI (e.g., discount line item) where relevant.",
-        "Garage rental pricing breakdown shows a discount when DIY membership is active."
-      ]
-    },
-    {
-      "id": "REQ-26",
-      "text": "Enhance Admin Dashboard: add a user verification panel (queue + detail), waitlist management, and a geo heatmap of demand based on stored searches/bookings aggregated by location string (no external maps).",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "7️⃣ Admin Dashboard",
-          "User verification panel",
-          "Geo heatmap of demand",
-          "Waitlist management"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Admin dashboard includes navigation to Verification, Waitlist, and Demand (heatmap) pages.",
-        "Waitlist management supports adding/removing entries and tracking status (e.g., pending/invited/converted).",
-        "Demand view displays aggregated counts by location string (e.g., city/region entered) and updates as new events are recorded.",
-        "All admin pages are gated by admin checks and deny non-admin access."
-      ]
-    },
-    {
-      "id": "REQ-27",
-      "text": "Add mobile-first “Fix My Car” entry experience: a one-tap CTA that opens an intake flow collecting issue description and media upload (photo/video), then routes the user to suggested next steps (estimated cost, nearby mechanics, nearby rental bays). AI pre-diagnosis suggestions must be simulated and labeled Coming Soon.",
+      "id": "REQ-42",
+      "text": "Add a notification badge counter and dropdown in the top navigation that shows recent notifications and supports marking as read.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-recent-notifications-2"
         ],
         "quotes": [
-          "Mobile First Tactics",
-          "One-tap “Fix My Car”",
-          "Upload photo/video of issue",
-          "AI pre-diagnosis suggestions",
-          "Show: Estimated cost",
-          "Nearby mechanics",
-          "Nearby rental bays"
+          "Real-time badge counter\n\nNotification dropdown"
         ]
       },
       "acceptanceCriteria": [
-        "A “Fix My Car” CTA is visible and thumb-friendly on mobile layouts (e.g., landing and/or customer dashboard).",
-        "The intake flow supports uploading media using the existing upload UI patterns and completes without errors.",
-        "Results screen shows estimated cost (from the estimator feature) and links/sections for mechanics and garages.",
-        "AI pre-diagnosis is clearly labeled “Coming Soon” and uses simulated UI only."
+        "TopNav shows an unread badge count when unread notifications exist.",
+        "Dropdown lists recent notifications with type + timestamp and links to the referenced entity when applicable.",
+        "Marking a notification as read updates the unread count and the item’s read state."
       ]
     },
     {
-      "id": "REQ-28",
-      "text": "Add desktop-focused browse UX enhancements: side-by-side compare mechanics (select up to N mechanics to compare), an advanced filtering panel layout, and a map+list split-screen mode for garages and/or mechanics where map content remains simulated/Coming Soon if not functional.",
+      "id": "REQ-43",
+      "text": "Add a Notification Center dashboard page that lists all notifications with filtering (e.g., unread/all) and provides bulk actions (e.g., Mark all as read).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-recent-notifications-3"
         ],
         "quotes": [
-          "Desktop Enhancements",
-          "Side-by-side compare mechanics",
-          "Advanced filtering panel",
-          "Map + list split screen"
+          "Notification center dashboard page"
         ]
       },
       "acceptanceCriteria": [
-        "Mechanic browse supports selecting multiple mechanics and viewing a comparison layout with key fields (rate, rating, specialization, verification).",
-        "On desktop widths, filters render in an “advanced panel” layout without breaking existing filter functionality.",
-        "A split-screen mode can be toggled; map portions that are not implemented display consistent Coming Soon messaging."
+        "A dedicated page exists for viewing all notifications for the signed-in user.",
+        "Page supports toggling between Unread and All (or equivalent) and bulk mark-as-read.",
+        "Page is accessible via role-appropriate navigation without exposing admin-only routes to non-admins."
       ]
     },
     {
-      "id": "REQ-29",
-      "text": "Add clear “Coming Soon” labeling and simulated UX for Apple Pay / Google Pay payment options across checkout/booking areas, without integrating any external payment provider.",
+      "id": "REQ-44",
+      "text": "Implement toast alerts for notification-worthy events, driven by real backend mutations and subsequent query refresh (no simulated flows and no “Coming Soon” placeholders).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-recent-notifications-4"
         ],
         "quotes": [
-          "Apple Pay / Google Pay"
+          "Toast alerts for live updates",
+          "Do not display “Coming Soon” placeholders.",
+          "All flows must include:\nUser Action → Backend Processing → Database Update → UI State Update."
         ]
       },
       "acceptanceCriteria": [
-        "Any payment method UI that references Apple Pay/Google Pay is labeled “Coming Soon”.",
-        "Selecting these methods shows a simulated flow only and does not attempt payment processing."
+        "Key user actions (booking confirmed, dispute opened, funds released) show success/error toasts that reflect actual backend results.",
+        "Toast messaging does not contain “Simulated” or “Coming Soon”.",
+        "UI state after toasts matches backend state (e.g., booking status/payment status updated)."
       ]
     },
     {
-      "id": "REQ-30",
-      "text": "Implement a rating penalty system for no-shows as functional backend policy: allow a booking/rental to be marked as no-show (with role-appropriate permissions), automatically apply a penalty record to the responsible party, and reflect it in admin reporting and user dashboards.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Rating penalty system for no-shows"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Authorized users/admin can mark an eligible booking/rental as a no-show with a reason.",
-        "Backend creates a penalty record and associates it with the user and the booking/rental.",
-        "User dashboards display no-show penalties (count and recent entries).",
-        "Admin view can list/filter users with penalties."
-      ]
-    },
-    {
-      "id": "REQ-31",
-      "text": "Add calendar drag-and-drop booking UX on desktop as a simulated interaction unless full calendar mutation support already exists for that flow; if simulated, label it Coming Soon and ensure it does not break existing availability/booking views.",
+      "id": "REQ-45",
+      "text": "Remove or refactor payment/messaging/escrow-related “Coming Soon” and simulated-flow UI so the app contains no “Coming Soon” placeholders for the scopes covered here (payments and notifications), including removing simulated modals from payment selection and removing/redirecting the escrow-related Coming Soon hub entry points.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-recent-general-1"
         ],
         "quotes": [
-          "Calendar drag-and-drop booking"
+          "Do not display “Coming Soon” placeholders.",
+          "If a feature cannot be externally integrated, build a functional internal logic version with proper state handling and UI feedback."
         ]
       },
       "acceptanceCriteria": [
-        "On desktop, a calendar UI demonstrates drag-and-drop booking interactions.",
-        "If the action is not persisted, the UI clearly labels the feature as “Coming Soon” and resets gracefully.",
-        "Existing booking/availability pages remain functional and stable."
+        "PaymentMethodSelector does not import/use ComingSoonBadge or SimulatedFlowModal.",
+        "Any UI entry point that previously advertised “Escrow Payment” as Coming Soon is removed or updated to reflect the functional internal ledger escrow.",
+        "No user-facing copy within the payments/notifications flow uses “Coming Soon” or “Simulated”."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in backend/main.mo; add new logic/types there and create backend/migration.mo only if existing stable state needs upgrading.",
-    "Do not edit files under frontend/src/components/ui or any frontend immutablePaths listed in SYSTEM_CONTEXT; compose existing UI components instead.",
-    "Unsupported capabilities (video calls, real-time chat/messaging, push notifications, escrow, real-time tracking, external payments like Apple Pay/Google Pay, AI/LLM diagnosis) must be implemented only as simulated UX flows and clearly labeled “Coming Soon.”",
-    "Use English for any user-facing text."
+    "Backend must remain a single Motoko actor in backend/main.mo; only add backend/migration.mo if existing stable state must be upgraded.",
+    "Do not integrate external payment providers (Stripe/PayPal) or simulate external API calls; implement internal ledger only.",
+    "Do not implement email/SMS sending; notifications must be in-app only.",
+    "Authentication must remain Internet Identity only; do not add email/password auth, password resets, 2FA, or email verification flows.",
+    "Do not modify frontend immutable paths: frontend/src/hooks/useInternetIdentity.ts(x), frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui/*.",
+    "Use English for all user-facing text."
   ],
   "nonGoals": [
-    "Integrating third-party video calling providers or WebRTC signaling for real video calls.",
-    "Implementing real-time messaging/chat via WebSockets or any real-time transport.",
-    "Implementing push notifications.",
-    "Implementing escrow or payment processing through external providers (including Apple Pay/Google Pay).",
-    "Implementing AI pre-diagnosis using external LLM services."
+    "Implementing real-time messaging via WebSockets or any real-time transport beyond standard query/mutation refresh patterns.",
+    "Integrating external maps providers or building interactive map pin availability for this request.",
+    "Implementing Apple Pay / Google Pay payments (must be removed from current simulated UI for this scope).",
+    "Implementing Stripe Connect adapters now (only ensure the schema/interfaces are provider-agnostic)."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }

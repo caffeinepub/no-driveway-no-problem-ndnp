@@ -101,6 +101,7 @@ export interface MechanicAssistanceRequest {
     user: Principal;
     timestamp: Time;
     details: string;
+    assignedMechanic?: Principal;
 }
 export interface ToolRecommendation {
     tools: Array<string>;
@@ -196,6 +197,7 @@ export interface backendInterface {
     _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
+    acceptAssistanceRequest(requestId: bigint): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     createAssistanceRequest(bookingId: bigint, serviceType: AssistanceType, details: string): Promise<bigint>;
     createRepairEstimate(repairType: RepairCategory, vehicleInfo: string, partsCost: bigint, laborHours: number, hourlyRate: bigint): Promise<bigint>;
@@ -316,6 +318,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async acceptAssistanceRequest(arg0: bigint): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.acceptAssistanceRequest(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.acceptAssistanceRequest(arg0);
+            return result;
+        }
+    }
     async assignCallerUserRole(arg0: Principal, arg1: UserRole): Promise<void> {
         if (this.processError) {
             try {
@@ -376,28 +392,28 @@ export class Backend implements backendInterface {
         if (this.processError) {
             try {
                 const result = await this.actor.getAllToolRecommendations();
-                return from_candid_vec_n21(this._uploadFile, this._downloadFile, result);
+                return from_candid_vec_n22(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getAllToolRecommendations();
-            return from_candid_vec_n21(this._uploadFile, this._downloadFile, result);
+            return from_candid_vec_n22(this._uploadFile, this._downloadFile, result);
         }
     }
     async getAssistanceRequest(arg0: bigint): Promise<MechanicAssistanceRequest | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getAssistanceRequest(arg0);
-                return from_candid_opt_n26(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n27(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getAssistanceRequest(arg0);
-            return from_candid_opt_n26(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n27(this._uploadFile, this._downloadFile, result);
         }
     }
     async getCallerAssistanceRequests(): Promise<Array<MechanicAssistanceRequest>> {
@@ -418,84 +434,84 @@ export class Backend implements backendInterface {
         if (this.processError) {
             try {
                 const result = await this.actor.getCallerRepairEstimates();
-                return from_candid_vec_n27(this._uploadFile, this._downloadFile, result);
+                return from_candid_vec_n28(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getCallerRepairEstimates();
-            return from_candid_vec_n27(this._uploadFile, this._downloadFile, result);
+            return from_candid_vec_n28(this._uploadFile, this._downloadFile, result);
         }
     }
     async getCallerUserProfile(): Promise<UserProfile | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getCallerUserProfile();
-                return from_candid_opt_n32(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n33(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getCallerUserProfile();
-            return from_candid_opt_n32(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n33(this._uploadFile, this._downloadFile, result);
         }
     }
     async getCallerUserRole(): Promise<UserRole> {
         if (this.processError) {
             try {
                 const result = await this.actor.getCallerUserRole();
-                return from_candid_UserRole_n38(this._uploadFile, this._downloadFile, result);
+                return from_candid_UserRole_n39(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getCallerUserRole();
-            return from_candid_UserRole_n38(this._uploadFile, this._downloadFile, result);
+            return from_candid_UserRole_n39(this._uploadFile, this._downloadFile, result);
         }
     }
     async getRepairEstimate(arg0: bigint): Promise<RepairCostEstimate | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getRepairEstimate(arg0);
-                return from_candid_opt_n40(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getRepairEstimate(arg0);
-            return from_candid_opt_n40(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async getToolRecommendation(arg0: RepairCategory): Promise<ToolRecommendation | null> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getToolRecommendation(to_candid_RepairCategory_n12(this._uploadFile, this._downloadFile, arg0));
                 return from_candid_opt_n41(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getToolRecommendation(to_candid_RepairCategory_n12(this._uploadFile, this._downloadFile, arg0));
+            const result = await this.actor.getRepairEstimate(arg0);
             return from_candid_opt_n41(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getToolRecommendation(arg0: RepairCategory): Promise<ToolRecommendation | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getToolRecommendation(to_candid_RepairCategory_n12(this._uploadFile, this._downloadFile, arg0));
+                return from_candid_opt_n42(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getToolRecommendation(to_candid_RepairCategory_n12(this._uploadFile, this._downloadFile, arg0));
+            return from_candid_opt_n42(this._uploadFile, this._downloadFile, result);
         }
     }
     async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getUserProfile(arg0);
-                return from_candid_opt_n32(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n33(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getUserProfile(arg0);
-            return from_candid_opt_n32(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n33(this._uploadFile, this._downloadFile, result);
         }
     }
     async isCallerAdmin(): Promise<boolean> {
@@ -515,14 +531,14 @@ export class Backend implements backendInterface {
     async saveCallerUserProfile(arg0: UserProfile): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.saveCallerUserProfile(to_candid_UserProfile_n42(this._uploadFile, this._downloadFile, arg0));
+                const result = await this.actor.saveCallerUserProfile(to_candid_UserProfile_n43(this._uploadFile, this._downloadFile, arg0));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.saveCallerUserProfile(to_candid_UserProfile_n42(this._uploadFile, this._downloadFile, arg0));
+            const result = await this.actor.saveCallerUserProfile(to_candid_UserProfile_n43(this._uploadFile, this._downloadFile, arg0));
             return result;
         }
     }
@@ -543,28 +559,28 @@ export class Backend implements backendInterface {
     async updateAssistanceRequestStatus(arg0: bigint, arg1: AssistanceStatus): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.updateAssistanceRequestStatus(arg0, to_candid_AssistanceStatus_n47(this._uploadFile, this._downloadFile, arg1));
+                const result = await this.actor.updateAssistanceRequestStatus(arg0, to_candid_AssistanceStatus_n48(this._uploadFile, this._downloadFile, arg1));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.updateAssistanceRequestStatus(arg0, to_candid_AssistanceStatus_n47(this._uploadFile, this._downloadFile, arg1));
+            const result = await this.actor.updateAssistanceRequestStatus(arg0, to_candid_AssistanceStatus_n48(this._uploadFile, this._downloadFile, arg1));
             return result;
         }
     }
     async updateEstimateStatus(arg0: bigint, arg1: EstimateStatus): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.updateEstimateStatus(arg0, to_candid_EstimateStatus_n49(this._uploadFile, this._downloadFile, arg1));
+                const result = await this.actor.updateEstimateStatus(arg0, to_candid_EstimateStatus_n50(this._uploadFile, this._downloadFile, arg1));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.updateEstimateStatus(arg0, to_candid_EstimateStatus_n49(this._uploadFile, this._downloadFile, arg1));
+            const result = await this.actor.updateEstimateStatus(arg0, to_candid_EstimateStatus_n50(this._uploadFile, this._downloadFile, arg1));
             return result;
         }
     }
@@ -575,44 +591,47 @@ function from_candid_AssistanceStatus_n17(_uploadFile: (file: ExternalBlob) => P
 function from_candid_AssistanceType_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _AssistanceType): AssistanceType {
     return from_candid_variant_n20(_uploadFile, _downloadFile, value);
 }
-function from_candid_EstimateStatus_n30(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _EstimateStatus): EstimateStatus {
-    return from_candid_variant_n31(_uploadFile, _downloadFile, value);
+function from_candid_EstimateStatus_n31(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _EstimateStatus): EstimateStatus {
+    return from_candid_variant_n32(_uploadFile, _downloadFile, value);
 }
 function from_candid_MechanicAssistanceRequest_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _MechanicAssistanceRequest): MechanicAssistanceRequest {
     return from_candid_record_n16(_uploadFile, _downloadFile, value);
 }
-function from_candid_RepairCategory_n24(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _RepairCategory): RepairCategory {
-    return from_candid_variant_n25(_uploadFile, _downloadFile, value);
+function from_candid_RepairCategory_n25(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _RepairCategory): RepairCategory {
+    return from_candid_variant_n26(_uploadFile, _downloadFile, value);
 }
-function from_candid_RepairCostEstimate_n28(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _RepairCostEstimate): RepairCostEstimate {
-    return from_candid_record_n29(_uploadFile, _downloadFile, value);
+function from_candid_RepairCostEstimate_n29(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _RepairCostEstimate): RepairCostEstimate {
+    return from_candid_record_n30(_uploadFile, _downloadFile, value);
 }
-function from_candid_Role_n36(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Role): Role {
-    return from_candid_variant_n37(_uploadFile, _downloadFile, value);
+function from_candid_Role_n37(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Role): Role {
+    return from_candid_variant_n38(_uploadFile, _downloadFile, value);
 }
-function from_candid_ToolRecommendation_n22(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _ToolRecommendation): ToolRecommendation {
-    return from_candid_record_n23(_uploadFile, _downloadFile, value);
+function from_candid_ToolRecommendation_n23(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _ToolRecommendation): ToolRecommendation {
+    return from_candid_record_n24(_uploadFile, _downloadFile, value);
 }
-function from_candid_UserProfile_n33(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserProfile): UserProfile {
-    return from_candid_record_n34(_uploadFile, _downloadFile, value);
+function from_candid_UserProfile_n34(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserProfile): UserProfile {
+    return from_candid_record_n35(_uploadFile, _downloadFile, value);
 }
-function from_candid_UserRole_n38(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
-    return from_candid_variant_n39(_uploadFile, _downloadFile, value);
+function from_candid_UserRole_n39(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
+    return from_candid_variant_n40(_uploadFile, _downloadFile, value);
 }
 function from_candid__CaffeineStorageRefillResult_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: __CaffeineStorageRefillResult): _CaffeineStorageRefillResult {
     return from_candid_record_n5(_uploadFile, _downloadFile, value);
 }
-function from_candid_opt_n26(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_MechanicAssistanceRequest]): MechanicAssistanceRequest | null {
+function from_candid_opt_n21(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [Principal]): Principal | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n27(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_MechanicAssistanceRequest]): MechanicAssistanceRequest | null {
     return value.length === 0 ? null : from_candid_MechanicAssistanceRequest_n15(_uploadFile, _downloadFile, value[0]);
 }
-function from_candid_opt_n32(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
-    return value.length === 0 ? null : from_candid_UserProfile_n33(_uploadFile, _downloadFile, value[0]);
+function from_candid_opt_n33(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
+    return value.length === 0 ? null : from_candid_UserProfile_n34(_uploadFile, _downloadFile, value[0]);
 }
-function from_candid_opt_n40(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_RepairCostEstimate]): RepairCostEstimate | null {
-    return value.length === 0 ? null : from_candid_RepairCostEstimate_n28(_uploadFile, _downloadFile, value[0]);
+function from_candid_opt_n41(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_RepairCostEstimate]): RepairCostEstimate | null {
+    return value.length === 0 ? null : from_candid_RepairCostEstimate_n29(_uploadFile, _downloadFile, value[0]);
 }
-function from_candid_opt_n41(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_ToolRecommendation]): ToolRecommendation | null {
-    return value.length === 0 ? null : from_candid_ToolRecommendation_n22(_uploadFile, _downloadFile, value[0]);
+function from_candid_opt_n42(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_ToolRecommendation]): ToolRecommendation | null {
+    return value.length === 0 ? null : from_candid_ToolRecommendation_n23(_uploadFile, _downloadFile, value[0]);
 }
 function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {
     return value.length === 0 ? null : value[0];
@@ -628,6 +647,7 @@ function from_candid_record_n16(_uploadFile: (file: ExternalBlob) => Promise<Uin
     user: Principal;
     timestamp: _Time;
     details: string;
+    assignedMechanic: [] | [Principal];
 }): {
     id: bigint;
     status: AssistanceStatus;
@@ -636,6 +656,7 @@ function from_candid_record_n16(_uploadFile: (file: ExternalBlob) => Promise<Uin
     user: Principal;
     timestamp: Time;
     details: string;
+    assignedMechanic?: Principal;
 } {
     return {
         id: value.id,
@@ -644,10 +665,11 @@ function from_candid_record_n16(_uploadFile: (file: ExternalBlob) => Promise<Uin
         bookingId: value.bookingId,
         user: value.user,
         timestamp: value.timestamp,
-        details: value.details
+        details: value.details,
+        assignedMechanic: record_opt_to_undefined(from_candid_opt_n21(_uploadFile, _downloadFile, value.assignedMechanic))
     };
 }
-function from_candid_record_n23(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_record_n24(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     tools: Array<string>;
     consumables: Array<string>;
     category: _RepairCategory;
@@ -659,10 +681,10 @@ function from_candid_record_n23(_uploadFile: (file: ExternalBlob) => Promise<Uin
     return {
         tools: value.tools,
         consumables: value.consumables,
-        category: from_candid_RepairCategory_n24(_uploadFile, _downloadFile, value.category)
+        category: from_candid_RepairCategory_n25(_uploadFile, _downloadFile, value.category)
     };
 }
-function from_candid_record_n29(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_record_n30(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     id: bigint;
     status: _EstimateStatus;
     vehicleInfo: string;
@@ -685,17 +707,17 @@ function from_candid_record_n29(_uploadFile: (file: ExternalBlob) => Promise<Uin
 } {
     return {
         id: value.id,
-        status: from_candid_EstimateStatus_n30(_uploadFile, _downloadFile, value.status),
+        status: from_candid_EstimateStatus_n31(_uploadFile, _downloadFile, value.status),
         vehicleInfo: value.vehicleInfo,
         partsCost: value.partsCost,
         laborHours: value.laborHours,
         user: value.user,
         hourlyRate: value.hourlyRate,
         totalCost: value.totalCost,
-        repairType: from_candid_RepairCategory_n24(_uploadFile, _downloadFile, value.repairType)
+        repairType: from_candid_RepairCategory_n25(_uploadFile, _downloadFile, value.repairType)
     };
 }
-function from_candid_record_n34(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_record_n35(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     name: string;
     email: string;
     roles: Array<_Role>;
@@ -707,7 +729,7 @@ function from_candid_record_n34(_uploadFile: (file: ExternalBlob) => Promise<Uin
     return {
         name: value.name,
         email: value.email,
-        roles: from_candid_vec_n35(_uploadFile, _downloadFile, value.roles)
+        roles: from_candid_vec_n36(_uploadFile, _downloadFile, value.roles)
     };
 }
 function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
@@ -746,7 +768,7 @@ function from_candid_variant_n20(_uploadFile: (file: ExternalBlob) => Promise<Ui
 }): AssistanceType {
     return "inspection" in value ? AssistanceType.inspection : "emergency" in value ? AssistanceType.emergency : "repairHelp" in value ? AssistanceType.repairHelp : "consultation" in value ? AssistanceType.consultation : value;
 }
-function from_candid_variant_n25(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_variant_n26(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     brakeJob: null;
 } | {
     other: string;
@@ -821,7 +843,7 @@ function from_candid_variant_n25(_uploadFile: (file: ExternalBlob) => Promise<Ui
         diagnostics: value.diagnostics
     } : value;
 }
-function from_candid_variant_n31(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_variant_n32(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     pending: null;
 } | {
     completed: null;
@@ -830,7 +852,7 @@ function from_candid_variant_n31(_uploadFile: (file: ExternalBlob) => Promise<Ui
 }): EstimateStatus {
     return "pending" in value ? EstimateStatus.pending : "completed" in value ? EstimateStatus.completed : "rejected" in value ? EstimateStatus.rejected : value;
 }
-function from_candid_variant_n37(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_variant_n38(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     admin: null;
 } | {
     customer: null;
@@ -841,7 +863,7 @@ function from_candid_variant_n37(_uploadFile: (file: ExternalBlob) => Promise<Ui
 }): Role {
     return "admin" in value ? Role.admin : "customer" in value ? Role.customer : "garageOwner" in value ? Role.garageOwner : "mechanic" in value ? Role.mechanic : value;
 }
-function from_candid_variant_n39(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_variant_n40(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     admin: null;
 } | {
     user: null;
@@ -853,32 +875,32 @@ function from_candid_variant_n39(_uploadFile: (file: ExternalBlob) => Promise<Ui
 function from_candid_vec_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_MechanicAssistanceRequest>): Array<MechanicAssistanceRequest> {
     return value.map((x)=>from_candid_MechanicAssistanceRequest_n15(_uploadFile, _downloadFile, x));
 }
-function from_candid_vec_n21(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_ToolRecommendation>): Array<ToolRecommendation> {
-    return value.map((x)=>from_candid_ToolRecommendation_n22(_uploadFile, _downloadFile, x));
+function from_candid_vec_n22(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_ToolRecommendation>): Array<ToolRecommendation> {
+    return value.map((x)=>from_candid_ToolRecommendation_n23(_uploadFile, _downloadFile, x));
 }
-function from_candid_vec_n27(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_RepairCostEstimate>): Array<RepairCostEstimate> {
-    return value.map((x)=>from_candid_RepairCostEstimate_n28(_uploadFile, _downloadFile, x));
+function from_candid_vec_n28(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_RepairCostEstimate>): Array<RepairCostEstimate> {
+    return value.map((x)=>from_candid_RepairCostEstimate_n29(_uploadFile, _downloadFile, x));
 }
-function from_candid_vec_n35(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Role>): Array<Role> {
-    return value.map((x)=>from_candid_Role_n36(_uploadFile, _downloadFile, x));
+function from_candid_vec_n36(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Role>): Array<Role> {
+    return value.map((x)=>from_candid_Role_n37(_uploadFile, _downloadFile, x));
 }
-function to_candid_AssistanceStatus_n47(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: AssistanceStatus): _AssistanceStatus {
-    return to_candid_variant_n48(_uploadFile, _downloadFile, value);
+function to_candid_AssistanceStatus_n48(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: AssistanceStatus): _AssistanceStatus {
+    return to_candid_variant_n49(_uploadFile, _downloadFile, value);
 }
 function to_candid_AssistanceType_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: AssistanceType): _AssistanceType {
     return to_candid_variant_n11(_uploadFile, _downloadFile, value);
 }
-function to_candid_EstimateStatus_n49(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: EstimateStatus): _EstimateStatus {
-    return to_candid_variant_n50(_uploadFile, _downloadFile, value);
+function to_candid_EstimateStatus_n50(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: EstimateStatus): _EstimateStatus {
+    return to_candid_variant_n51(_uploadFile, _downloadFile, value);
 }
 function to_candid_RepairCategory_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: RepairCategory): _RepairCategory {
     return to_candid_variant_n13(_uploadFile, _downloadFile, value);
 }
-function to_candid_Role_n45(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Role): _Role {
-    return to_candid_variant_n46(_uploadFile, _downloadFile, value);
+function to_candid_Role_n46(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Role): _Role {
+    return to_candid_variant_n47(_uploadFile, _downloadFile, value);
 }
-function to_candid_UserProfile_n42(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserProfile): _UserProfile {
-    return to_candid_record_n43(_uploadFile, _downloadFile, value);
+function to_candid_UserProfile_n43(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserProfile): _UserProfile {
+    return to_candid_record_n44(_uploadFile, _downloadFile, value);
 }
 function to_candid_UserRole_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
     return to_candid_variant_n9(_uploadFile, _downloadFile, value);
@@ -898,7 +920,7 @@ function to_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
         proposed_top_up_amount: value.proposed_top_up_amount ? candid_some(value.proposed_top_up_amount) : candid_none()
     };
 }
-function to_candid_record_n43(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function to_candid_record_n44(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     name: string;
     email: string;
     roles: Array<Role>;
@@ -910,7 +932,7 @@ function to_candid_record_n43(_uploadFile: (file: ExternalBlob) => Promise<Uint8
     return {
         name: value.name,
         email: value.email,
-        roles: to_candid_vec_n44(_uploadFile, _downloadFile, value.roles)
+        roles: to_candid_vec_n45(_uploadFile, _downloadFile, value.roles)
     };
 }
 function to_candid_variant_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: AssistanceType): {
@@ -998,7 +1020,7 @@ function to_candid_variant_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint
         diagnostics: value.diagnostics
     } : value;
 }
-function to_candid_variant_n46(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Role): {
+function to_candid_variant_n47(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Role): {
     admin: null;
 } | {
     customer: null;
@@ -1017,7 +1039,7 @@ function to_candid_variant_n46(_uploadFile: (file: ExternalBlob) => Promise<Uint
         mechanic: null
     } : value;
 }
-function to_candid_variant_n48(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: AssistanceStatus): {
+function to_candid_variant_n49(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: AssistanceStatus): {
     cancelled: null;
 } | {
     pending: null;
@@ -1040,7 +1062,7 @@ function to_candid_variant_n48(_uploadFile: (file: ExternalBlob) => Promise<Uint
         accepted: null
     } : value;
 }
-function to_candid_variant_n50(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: EstimateStatus): {
+function to_candid_variant_n51(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: EstimateStatus): {
     pending: null;
 } | {
     completed: null;
@@ -1070,8 +1092,8 @@ function to_candid_variant_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8
         guest: null
     } : value;
 }
-function to_candid_vec_n44(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<Role>): Array<_Role> {
-    return value.map((x)=>to_candid_Role_n45(_uploadFile, _downloadFile, x));
+function to_candid_vec_n45(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<Role>): Array<_Role> {
+    return value.map((x)=>to_candid_Role_n46(_uploadFile, _downloadFile, x));
 }
 export interface CreateActorOptions {
     agent?: Agent;
