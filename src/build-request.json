@@ -1,0 +1,418 @@
+{
+  "kind": "build_request",
+  "title": "DIY Support, Trust & Safety, Revenue Systems, Admin Enhancements, and Coming-Soon UX for Unsupported Features",
+  "projectName": "NDNP Marketplace",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-12",
+      "text": "Add a new DIY Support Layer entry point across relevant customer-facing pages: render a prominent “Need Help While DIY?” button on Garage Detail pages and in the customer DIY/garage booking flow, opening a dedicated DIY Support panel/modal.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Add: “Need Help While DIY?” button"
+        ]
+      },
+      "acceptanceCriteria": [
+        "On Garage Detail page, a visible “Need Help While DIY?” action is present on both mobile and desktop breakpoints.",
+        "Clicking the button opens a DIY Support UI surface (page, panel, or modal) without navigation errors.",
+        "The DIY Support UI surface can be reached by authenticated users; unauthenticated users are prompted to sign in."
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "text": "Implement tool recommendations for a selected repair scenario within the DIY Support panel: allow the user to choose a repair type/category and receive a structured list of recommended tools and consumables that can be saved to the user’s DIY session.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Tool recommendations for selected repair"
+        ]
+      },
+      "acceptanceCriteria": [
+        "DIY Support panel includes a repair selector and shows a generated list of recommended tools/consumables.",
+        "Users can save the recommended tool list to the current DIY support session and see it on refresh.",
+        "Backend persists DIY support sessions (or equivalent) per user so tool recommendations are not lost on reload."
+      ]
+    },
+    {
+      "id": "REQ-14",
+      "text": "Implement a repair cost estimator in the DIY Support panel: collect basic inputs (repair type, vehicle info as free-text, parts cost estimate, labor time estimate) and return a calculated estimate breakdown; store estimates in the user’s DIY session history.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Repair cost estimator",
+          "Show: Estimated cost"
+        ]
+      },
+      "acceptanceCriteria": [
+        "DIY Support panel includes an estimator form and displays a breakdown (parts, labor, total) after submission.",
+        "Estimates are stored and listed in a “Recent estimates” section for the authenticated user.",
+        "Estimator calculations are deterministic and performed in backend logic (not only UI)."
+      ]
+    },
+    {
+      "id": "REQ-15",
+      "text": "Add “Add mechanic assistance mid-booking” to the garage rental booking experience as a functional add-on selection (without real-time communication): users can request assistance, choose assistance type, and submit the request; the request is stored and visible in both customer and mechanic dashboards.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Add mechanic assistance mid-booking"
+        ]
+      },
+      "acceptanceCriteria": [
+        "During a garage rental booking flow (or booking detail), the user can add a mechanic assistance add-on and submit it.",
+        "Submitted assistance requests are persisted in backend state and linked to the user and the booking (or session).",
+        "Mechanic dashboard shows a list of incoming assistance requests with status (e.g., requested/accepted/declined/completed).",
+        "Customer dashboard shows submitted assistance requests and their status."
+      ]
+    },
+    {
+      "id": "REQ-16",
+      "text": "Create simulated “Coming Soon” UX flows for unsupported on-demand mechanic consultation via video call upsell, clearly labeled as Coming Soon and non-functional beyond UI progression screens.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "On-demand mechanic consultation (video call upsell)",
+          "I would like those unsupport features to be labelled as a coming soon features - and make the area show simulated UX flows."
+        ]
+      },
+      "acceptanceCriteria": [
+        "DIY Support UI includes a “Video consultation” option that is clearly marked “Coming Soon”.",
+        "Selecting the option shows a simulated multi-step flow (e.g., select duration, confirm, success) with no attempt to start an actual call.",
+        "All relevant UI surfaces include consistent Coming Soon labeling and do not crash when used."
+      ]
+    },
+    {
+      "id": "REQ-17",
+      "text": "Implement Trust & Safety: add user identity verification submission as a functional workflow (document upload + status), including storage of verification status and admin review/approval/rejection actions.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "5️⃣ Trust & Safety System",
+          "ID verification",
+          "User verification panel",
+          "I want this to be a fully function system."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Authenticated users can upload identity verification documents and see their verification status (e.g., Not submitted / Pending / Verified / Rejected).",
+        "Admin can view a verification queue/panel and set user verification status to approved/rejected with an optional note.",
+        "Verification status is persisted in backend state and visible after reload.",
+        "Non-admin users cannot access admin verification actions."
+      ]
+    },
+    {
+      "id": "REQ-18",
+      "text": "Implement Trust & Safety: support insurance upload as a functional workflow for both mechanics and garage owners (where applicable), including a persisted insurance document reference and status visible to users and admins.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Insurance upload"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Mechanics and garage owners can upload an insurance document and see its current status.",
+        "Admin can view uploaded insurance documents (or references) and mark them approved/rejected.",
+        "The workflow uses the existing file/media upload handling patterns and persists results in backend state."
+      ]
+    },
+    {
+      "id": "REQ-19",
+      "text": "Implement waiver digital signing as a functional workflow for garage rentals: users can view a waiver text, accept/sign (typed name + checkbox + timestamp), and the signed waiver record is stored and viewable in booking details and admin tools.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Waiver digital signing"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Garage rental flows that require a waiver present a waiver text and signature/acceptance UI before completion.",
+        "A signed waiver record (signer, timestamp, acceptance) is persisted and can be displayed later for the customer and admin.",
+        "If a garage listing has waiverRequired=true, the UI enforces signing before confirming booking actions tied to that flow."
+      ]
+    },
+    {
+      "id": "REQ-20",
+      "text": "Implement dispute resolution as a functional ticketing workflow: allow customers/mechanics/garage owners to open disputes tied to a booking/listing, exchange non-real-time updates (comments/status changes), and allow admins to resolve/close disputes with a resolution note.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Dispute resolution flow",
+          "Dispute resolution tools"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can create a dispute with category, description, and optional attachment reference, and see it in their dashboard.",
+        "Dispute tickets have statuses (e.g., Open/Under Review/Resolved/Closed) and a timeline of updates stored in backend state.",
+        "Admin dashboard includes a dispute tools page to review disputes, change status, and add a resolution note.",
+        "No real-time messaging is implemented; updates appear on refresh/refetch."
+      ]
+    },
+    {
+      "id": "REQ-21",
+      "text": "Add simulated “Coming Soon” UX for unsupported in-app messaging, push notifications, real-time tracking (mechanic en route), and escrow payment system; each must be clearly labeled Coming Soon and must not imply actual delivery of those capabilities.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "In-app messaging",
+          "Push notifications for booking confirmations",
+          "Real-time tracking when mechanic is en route",
+          "Escrow payment system",
+          "I would like those unsupport features to be labelled as a coming soon features - and make the area show simulated UX flows."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Any UI entry points added for messaging, push notifications, real-time tracking, or escrow show “Coming Soon” badges/labels.",
+        "Clicking these entry points shows simulated screens only, and no backend calls are required for unsupported features.",
+        "Existing “Map view coming soon” in Garage Browse remains consistent with this Coming Soon pattern."
+      ]
+    },
+    {
+      "id": "REQ-22",
+      "text": "Implement Revenue Model Integration as functional backend calculations and admin reporting: store platform fee/commission settings (mechanic booking fee 15–25%, garage rental commission 10–20%), apply fee calculation to bookings/rentals, and present totals in an admin revenue tracking view.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "6️⃣ Revenue Model Integration",
+          "15–25% mechanic booking fee",
+          "10–20% garage rental commission",
+          "Revenue tracking"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend supports configurable fee rates within the specified ranges and persists the selected configuration.",
+        "For applicable bookings/rentals, the system computes platform fee amounts and stores them as part of a revenue record or booking summary.",
+        "Admin dashboard includes a revenue tracking page showing totals and basic breakdowns (e.g., by type, date range if available).",
+        "Fee calculations are testable and consistent across reloads."
+      ]
+    },
+    {
+      "id": "REQ-23",
+      "text": "Implement featured mechanic boost option as a functional feature flag with pricing metadata (no external payment): mechanics can opt-in (or request) a featured boost, admin can approve/enable it, and browse results reflect featured mechanics via a visible badge and sorting priority.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Featured mechanic boost option"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Mechanic dashboard allows requesting/enabling a “Featured boost” state (with clear note that payment is not processed in-app).",
+        "Admin can approve/enable/disable featured status for a mechanic.",
+        "Mechanic cards/public profile show a “Featured” badge when enabled.",
+        "Mechanic browse results can optionally prioritize featured mechanics (e.g., top of list) without breaking existing filtering."
+      ]
+    },
+    {
+      "id": "REQ-24",
+      "text": "Implement emergency service surge pricing as a functional pricing modifier for mechanic services: mechanics can toggle emergency availability and define a surge multiplier/percent within allowed bounds; customer booking/quote views show the adjusted price when emergency is selected.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Emergency service surge pricing"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Mechanic dashboard includes a toggle for “Emergency service” and a configurable surge setting.",
+        "Customer-facing booking/quote UI shows base rate and emergency-adjusted rate when emergency is chosen.",
+        "Backend persists emergency settings and computes adjusted pricing consistently."
+      ]
+    },
+    {
+      "id": "REQ-25",
+      "text": "Implement mechanic monthly pro membership and customer DIY membership as functional membership states (no external billing): allow users to activate/deactivate membership status, persist it, and apply membership rules such as discounted garage rental pricing for DIY membership (clearly shown in pricing breakdown).",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Monthly pro membership for mechanics",
+          "DIY membership for discounted rentals"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can see and manage membership status in an appropriate dashboard/settings area.",
+        "Membership state persists in backend and affects UI (e.g., discount line item) where relevant.",
+        "Garage rental pricing breakdown shows a discount when DIY membership is active."
+      ]
+    },
+    {
+      "id": "REQ-26",
+      "text": "Enhance Admin Dashboard: add a user verification panel (queue + detail), waitlist management, and a geo heatmap of demand based on stored searches/bookings aggregated by location string (no external maps).",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "7️⃣ Admin Dashboard",
+          "User verification panel",
+          "Geo heatmap of demand",
+          "Waitlist management"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Admin dashboard includes navigation to Verification, Waitlist, and Demand (heatmap) pages.",
+        "Waitlist management supports adding/removing entries and tracking status (e.g., pending/invited/converted).",
+        "Demand view displays aggregated counts by location string (e.g., city/region entered) and updates as new events are recorded.",
+        "All admin pages are gated by admin checks and deny non-admin access."
+      ]
+    },
+    {
+      "id": "REQ-27",
+      "text": "Add mobile-first “Fix My Car” entry experience: a one-tap CTA that opens an intake flow collecting issue description and media upload (photo/video), then routes the user to suggested next steps (estimated cost, nearby mechanics, nearby rental bays). AI pre-diagnosis suggestions must be simulated and labeled Coming Soon.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Mobile First Tactics",
+          "One-tap “Fix My Car”",
+          "Upload photo/video of issue",
+          "AI pre-diagnosis suggestions",
+          "Show: Estimated cost",
+          "Nearby mechanics",
+          "Nearby rental bays"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A “Fix My Car” CTA is visible and thumb-friendly on mobile layouts (e.g., landing and/or customer dashboard).",
+        "The intake flow supports uploading media using the existing upload UI patterns and completes without errors.",
+        "Results screen shows estimated cost (from the estimator feature) and links/sections for mechanics and garages.",
+        "AI pre-diagnosis is clearly labeled “Coming Soon” and uses simulated UI only."
+      ]
+    },
+    {
+      "id": "REQ-28",
+      "text": "Add desktop-focused browse UX enhancements: side-by-side compare mechanics (select up to N mechanics to compare), an advanced filtering panel layout, and a map+list split-screen mode for garages and/or mechanics where map content remains simulated/Coming Soon if not functional.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Desktop Enhancements",
+          "Side-by-side compare mechanics",
+          "Advanced filtering panel",
+          "Map + list split screen"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Mechanic browse supports selecting multiple mechanics and viewing a comparison layout with key fields (rate, rating, specialization, verification).",
+        "On desktop widths, filters render in an “advanced panel” layout without breaking existing filter functionality.",
+        "A split-screen mode can be toggled; map portions that are not implemented display consistent Coming Soon messaging."
+      ]
+    },
+    {
+      "id": "REQ-29",
+      "text": "Add clear “Coming Soon” labeling and simulated UX for Apple Pay / Google Pay payment options across checkout/booking areas, without integrating any external payment provider.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Apple Pay / Google Pay"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Any payment method UI that references Apple Pay/Google Pay is labeled “Coming Soon”.",
+        "Selecting these methods shows a simulated flow only and does not attempt payment processing."
+      ]
+    },
+    {
+      "id": "REQ-30",
+      "text": "Implement a rating penalty system for no-shows as functional backend policy: allow a booking/rental to be marked as no-show (with role-appropriate permissions), automatically apply a penalty record to the responsible party, and reflect it in admin reporting and user dashboards.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Rating penalty system for no-shows"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Authorized users/admin can mark an eligible booking/rental as a no-show with a reason.",
+        "Backend creates a penalty record and associates it with the user and the booking/rental.",
+        "User dashboards display no-show penalties (count and recent entries).",
+        "Admin view can list/filter users with penalties."
+      ]
+    },
+    {
+      "id": "REQ-31",
+      "text": "Add calendar drag-and-drop booking UX on desktop as a simulated interaction unless full calendar mutation support already exists for that flow; if simulated, label it Coming Soon and ensure it does not break existing availability/booking views.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Calendar drag-and-drop booking"
+        ]
+      },
+      "acceptanceCriteria": [
+        "On desktop, a calendar UI demonstrates drag-and-drop booking interactions.",
+        "If the action is not persisted, the UI clearly labels the feature as “Coming Soon” and resets gracefully.",
+        "Existing booking/availability pages remain functional and stable."
+      ]
+    }
+  ],
+  "constraints": [
+    "Backend must remain a single Motoko actor in backend/main.mo; add new logic/types there and create backend/migration.mo only if existing stable state needs upgrading.",
+    "Do not edit files under frontend/src/components/ui or any frontend immutablePaths listed in SYSTEM_CONTEXT; compose existing UI components instead.",
+    "Unsupported capabilities (video calls, real-time chat/messaging, push notifications, escrow, real-time tracking, external payments like Apple Pay/Google Pay, AI/LLM diagnosis) must be implemented only as simulated UX flows and clearly labeled “Coming Soon.”",
+    "Use English for any user-facing text."
+  ],
+  "nonGoals": [
+    "Integrating third-party video calling providers or WebRTC signaling for real video calls.",
+    "Implementing real-time messaging/chat via WebSockets or any real-time transport.",
+    "Implementing push notifications.",
+    "Implementing escrow or payment processing through external providers (including Apple Pay/Google Pay).",
+    "Implementing AI pre-diagnosis using external LLM services."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

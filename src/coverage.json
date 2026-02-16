@@ -1,0 +1,443 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-16T21:39:38.092Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 20,
+    "implemented": 20,
+    "items": [
+      {
+        "id": "REQ-12",
+        "summary": "Add a new DIY Support Layer entry point across relevant customer-facing pages: render a prominent “Need Help While DIY?” button on Garage Detail pages and in the customer DIY/garage booking flow, opening a dedicated DIY Support panel/modal.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/diy/DIYSupportModal.tsx",
+          "frontend/src/pages/garages/GarageDetail.tsx",
+          "frontend/src/components/booking/GarageBookingModal.tsx",
+          "frontend/src/pages/garages/GarageDetail.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/diy/DIYSupportModal.tsx",
+          "frontend/src/pages/garages/GarageDetail.tsx",
+          "frontend/src/components/booking/GarageBookingModal.tsx",
+          "frontend/src/pages/garages/GarageDetail.tsx"
+        ]
+      },
+      {
+        "id": "REQ-13",
+        "summary": "Implement tool recommendations for a selected repair scenario within the DIY Support panel: allow the user to choose a repair type/category and receive a structured list of recommended tools and consumables that can be saved to the user’s DIY session.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/diy/ToolRecommendationsSection.tsx",
+          "frontend/src/components/diy/DIYSupportModal.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/diy/ToolRecommendationsSection.tsx",
+          "frontend/src/components/diy/DIYSupportModal.tsx"
+        ]
+      },
+      {
+        "id": "REQ-14",
+        "summary": "Implement a repair cost estimator in the DIY Support panel: collect basic inputs (repair type, vehicle info as free-text, parts cost estimate, labor time estimate) and return a calculated estimate breakdown; store estimates in the user’s DIY session history.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/diy/RepairCostEstimatorSection.tsx",
+          "frontend/src/components/diy/DIYSupportModal.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/diy/RepairCostEstimatorSection.tsx",
+          "frontend/src/components/diy/DIYSupportModal.tsx"
+        ]
+      },
+      {
+        "id": "REQ-15",
+        "summary": "Add “Add mechanic assistance mid-booking” to the garage rental booking experience as a functional add-on selection (without real-time communication): users can request assistance, choose assistance type, and submit the request; the request is stored and visible in both customer and mechanic dashboards.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/booking/MechanicAssistanceAddon.tsx",
+          "frontend/src/components/booking/GarageBookingModal.tsx",
+          "frontend/src/pages/dashboards/CustomerDashboard.tsx",
+          "frontend/src/pages/dashboards/MechanicDashboard.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/booking/MechanicAssistanceAddon.tsx",
+          "frontend/src/components/booking/GarageBookingModal.tsx",
+          "frontend/src/pages/dashboards/CustomerDashboard.tsx",
+          "frontend/src/pages/dashboards/MechanicDashboard.tsx"
+        ]
+      },
+      {
+        "id": "REQ-16",
+        "summary": "Create simulated “Coming Soon” UX flows for unsupported on-demand mechanic consultation via video call upsell, clearly labeled as Coming Soon and non-functional beyond UI progression screens.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/coming-soon/ComingSoonBadge.tsx",
+          "frontend/src/components/coming-soon/SimulatedFlowModal.tsx",
+          "frontend/src/components/diy/VideoConsultationComingSoon.tsx",
+          "frontend/src/components/diy/DIYSupportModal.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/coming-soon/ComingSoonBadge.tsx",
+          "frontend/src/components/coming-soon/SimulatedFlowModal.tsx",
+          "frontend/src/components/diy/VideoConsultationComingSoon.tsx",
+          "frontend/src/components/diy/DIYSupportModal.tsx"
+        ]
+      },
+      {
+        "id": "REQ-17",
+        "summary": "Implement Trust & Safety: add user identity verification submission as a functional workflow (document upload + status), including storage of verification status and admin review/approval/rejection actions.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/trust-safety/IdentityVerification.tsx",
+          "frontend/src/pages/admin/VerificationQueue.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/pages/dashboards/AdminDashboard.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/trust-safety/IdentityVerification.tsx",
+          "frontend/src/pages/admin/VerificationQueue.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/pages/dashboards/AdminDashboard.tsx"
+        ]
+      },
+      {
+        "id": "REQ-18",
+        "summary": "Implement Trust & Safety: support insurance upload as a functional workflow for both mechanics and garage owners (where applicable), including a persisted insurance document reference and status visible to users and admins.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/mechanics/MechanicProfileEditor.tsx",
+          "frontend/src/pages/garages/GarageListingEditor.tsx",
+          "frontend/src/pages/admin/InsuranceReview.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/pages/dashboards/AdminDashboard.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/mechanics/MechanicProfileEditor.tsx",
+          "frontend/src/pages/garages/GarageListingEditor.tsx",
+          "frontend/src/pages/admin/InsuranceReview.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/pages/dashboards/AdminDashboard.tsx"
+        ]
+      },
+      {
+        "id": "REQ-19",
+        "summary": "Implement waiver digital signing as a functional workflow for garage rentals: users can view a waiver text, accept/sign (typed name + checkbox + timestamp), and the signed waiver record is stored and viewable in booking details and admin tools.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/waivers/WaiverSigningModal.tsx",
+          "frontend/src/components/booking/GarageBookingModal.tsx",
+          "frontend/src/pages/admin/WaiverRecords.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/waivers/WaiverSigningModal.tsx",
+          "frontend/src/components/booking/GarageBookingModal.tsx",
+          "frontend/src/pages/admin/WaiverRecords.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-20",
+        "summary": "Implement dispute resolution as a functional ticketing workflow: allow customers/mechanics/garage owners to open disputes tied to a booking/listing, exchange non-real-time updates (comments/status changes), and allow admins to resolve/close disputes with a resolution note.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/disputes/Disputes.tsx",
+          "frontend/src/pages/admin/DisputeTools.tsx",
+          "frontend/src/pages/dashboards/CustomerDashboard.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/pages/dashboards/AdminDashboard.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/disputes/Disputes.tsx",
+          "frontend/src/pages/admin/DisputeTools.tsx",
+          "frontend/src/pages/dashboards/CustomerDashboard.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/pages/dashboards/AdminDashboard.tsx"
+        ]
+      },
+      {
+        "id": "REQ-21",
+        "summary": "Add simulated “Coming Soon” UX for unsupported in-app messaging, push notifications, real-time tracking (mechanic en route), and escrow payment system; each must be clearly labeled Coming Soon and must not imply actual delivery of those capabilities.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/coming-soon/UnsupportedFeaturesHub.tsx",
+          "frontend/src/components/layout/TopNav.tsx",
+          "frontend/src/pages/garages/GarageBrowse.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/coming-soon/UnsupportedFeaturesHub.tsx",
+          "frontend/src/components/layout/TopNav.tsx",
+          "frontend/src/pages/garages/GarageBrowse.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-22",
+        "summary": "Implement Revenue Model Integration as functional backend calculations and admin reporting: store platform fee/commission settings (mechanic booking fee 15–25%, garage rental commission 10–20%), apply fee calculation to bookings/rentals, and present totals in an admin revenue tracking view.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/admin/RevenueTracking.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/dashboards/AdminDashboard.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/admin/RevenueTracking.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/dashboards/AdminDashboard.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-23",
+        "summary": "Implement featured mechanic boost option as a functional feature flag with pricing metadata (no external payment): mechanics can opt-in (or request) a featured boost, admin can approve/enable it, and browse results reflect featured mechanics via a visible badge and sorting priority.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/dashboards/MechanicDashboard.tsx",
+          "frontend/src/pages/admin/FeaturedBoostManagement.tsx",
+          "frontend/src/components/mechanics/MechanicCard.tsx",
+          "frontend/src/pages/mechanics/MechanicBrowse.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/pages/dashboards/AdminDashboard.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/dashboards/MechanicDashboard.tsx",
+          "frontend/src/pages/admin/FeaturedBoostManagement.tsx",
+          "frontend/src/components/mechanics/MechanicCard.tsx",
+          "frontend/src/pages/mechanics/MechanicBrowse.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/pages/dashboards/AdminDashboard.tsx"
+        ]
+      },
+      {
+        "id": "REQ-24",
+        "summary": "Implement emergency service surge pricing as a functional pricing modifier for mechanic services: mechanics can toggle emergency availability and define a surge multiplier/percent within allowed bounds; customer booking/quote views show the adjusted price when emergency is selected.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/dashboards/MechanicDashboard.tsx",
+          "frontend/src/components/booking/MechanicEmergencyPricingToggle.tsx",
+          "frontend/src/components/booking/GarageBookingModal.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/dashboards/MechanicDashboard.tsx",
+          "frontend/src/components/booking/GarageBookingModal.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-25",
+        "summary": "Implement mechanic monthly pro membership and customer DIY membership as functional membership states (no external billing): allow users to activate/deactivate membership status, persist it, and apply membership rules such as discounted garage rental pricing for DIY membership (clearly shown in pricing breakdown).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/settings/MembershipSettings.tsx",
+          "frontend/src/components/booking/PricingBreakdown.tsx",
+          "frontend/src/components/booking/GarageBookingModal.tsx",
+          "frontend/src/components/layout/TopNav.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/settings/MembershipSettings.tsx",
+          "frontend/src/components/booking/PricingBreakdown.tsx",
+          "frontend/src/components/booking/GarageBookingModal.tsx",
+          "frontend/src/components/layout/TopNav.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-26",
+        "summary": "Enhance Admin Dashboard: add a user verification panel (queue + detail), waitlist management, and a geo heatmap of demand based on stored searches/bookings aggregated by location string (no external maps).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/admin/AdminRouteGuard.tsx",
+          "frontend/src/pages/admin/WaitlistManagement.tsx",
+          "frontend/src/pages/admin/DemandHeatmap.tsx",
+          "frontend/src/pages/dashboards/AdminDashboard.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/admin/AdminRouteGuard.tsx",
+          "frontend/src/pages/admin/WaitlistManagement.tsx",
+          "frontend/src/pages/admin/DemandHeatmap.tsx",
+          "frontend/src/pages/dashboards/AdminDashboard.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-27",
+        "summary": "Add mobile-first “Fix My Car” entry experience: a one-tap CTA that opens an intake flow collecting issue description and media upload (photo/video), then routes the user to suggested next steps (estimated cost, nearby mechanics, nearby rental bays). AI pre-diagnosis suggestions must be simulated and labeled Coming Soon.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/fix-my-car/FixMyCarIntake.tsx",
+          "frontend/src/pages/fix-my-car/FixMyCarResults.tsx",
+          "frontend/src/pages/Landing.tsx",
+          "frontend/src/pages/dashboards/CustomerDashboard.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/fix-my-car/FixMyCarIntake.tsx",
+          "frontend/src/pages/fix-my-car/FixMyCarResults.tsx",
+          "frontend/src/pages/Landing.tsx",
+          "frontend/src/pages/dashboards/CustomerDashboard.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-28",
+        "summary": "Add desktop-focused browse UX enhancements: side-by-side compare mechanics (select up to N mechanics to compare), an advanced filtering panel layout, and a map+list split-screen mode for garages and/or mechanics where map content remains simulated/Coming Soon if not functional.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/mechanics/MechanicCompareTray.tsx",
+          "frontend/src/components/mechanics/MechanicCompareView.tsx",
+          "frontend/src/pages/mechanics/MechanicBrowse.tsx",
+          "frontend/src/components/mechanics/MechanicFilters.tsx",
+          "frontend/src/pages/garages/GarageBrowse.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/mechanics/MechanicBrowse.tsx",
+          "frontend/src/components/mechanics/MechanicFilters.tsx",
+          "frontend/src/pages/garages/GarageBrowse.tsx"
+        ]
+      },
+      {
+        "id": "REQ-29",
+        "summary": "Add clear “Coming Soon” labeling and simulated UX for Apple Pay / Google Pay payment options across checkout/booking areas, without integrating any external payment provider.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/payments/PaymentMethodSelector.tsx",
+          "frontend/src/components/booking/GarageBookingModal.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/payments/PaymentMethodSelector.tsx",
+          "frontend/src/components/booking/GarageBookingModal.tsx"
+        ]
+      },
+      {
+        "id": "REQ-30",
+        "summary": "Implement a rating penalty system for no-shows as functional backend policy: allow a booking/rental to be marked as no-show (with role-appropriate permissions), automatically apply a penalty record to the responsible party, and reflect it in admin reporting and user dashboards.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/admin/NoShowPenalties.tsx",
+          "frontend/src/pages/dashboards/CustomerDashboard.tsx",
+          "frontend/src/pages/dashboards/MechanicDashboard.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/pages/dashboards/AdminDashboard.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/admin/NoShowPenalties.tsx",
+          "frontend/src/pages/dashboards/CustomerDashboard.tsx",
+          "frontend/src/pages/dashboards/MechanicDashboard.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/pages/dashboards/AdminDashboard.tsx"
+        ]
+      },
+      {
+        "id": "REQ-31",
+        "summary": "Add calendar drag-and-drop booking UX on desktop as a simulated interaction unless full calendar mutation support already exists for that flow; if simulated, label it Coming Soon and ensure it does not break existing availability/booking views.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/calendar/SimulatedDragDropCalendar.tsx",
+          "frontend/src/pages/dashboards/MechanicDashboard.tsx",
+          "frontend/src/pages/dashboards/GarageOwnerDashboard.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/dashboards/MechanicDashboard.tsx",
+          "frontend/src/pages/dashboards/GarageOwnerDashboard.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "build-request.json",
+    "build-template/README.md",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/admin/AdminRouteGuard.tsx",
+    "frontend/src/components/booking/GarageBookingModal.tsx",
+    "frontend/src/components/booking/MechanicAssistanceAddon.tsx",
+    "frontend/src/components/booking/PricingBreakdown.tsx",
+    "frontend/src/components/coming-soon/ComingSoonBadge.tsx",
+    "frontend/src/components/coming-soon/SimulatedFlowModal.tsx",
+    "frontend/src/components/diy/DIYSupportModal.tsx",
+    "frontend/src/components/diy/RepairCostEstimatorSection.tsx",
+    "frontend/src/components/diy/ToolRecommendationsSection.tsx",
+    "frontend/src/components/diy/VideoConsultationComingSoon.tsx",
+    "frontend/src/components/garages/GarageCard.tsx",
+    "frontend/src/components/garages/GarageFilters.tsx",
+    "frontend/src/components/layout/TopNav.tsx",
+    "frontend/src/components/mechanics/MechanicCard.tsx",
+    "frontend/src/components/mechanics/MechanicFilters.tsx",
+    "frontend/src/components/mechanics/MechanicVerificationBadges.tsx",
+    "frontend/src/components/payments/PaymentMethodSelector.tsx",
+    "frontend/src/components/reviews/ReviewList.tsx",
+    "frontend/src/components/waivers/WaiverSigningModal.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/lib/types.ts",
+    "frontend/src/pages/Landing.tsx",
+    "frontend/src/pages/admin/DemandHeatmap.tsx",
+    "frontend/src/pages/admin/DisputeTools.tsx",
+    "frontend/src/pages/admin/FeaturedBoostManagement.tsx",
+    "frontend/src/pages/admin/InsuranceReview.tsx",
+    "frontend/src/pages/admin/MarketplaceModeration.tsx",
+    "frontend/src/pages/admin/NoShowPenalties.tsx",
+    "frontend/src/pages/admin/RevenueTracking.tsx",
+    "frontend/src/pages/admin/ReviewModeration.tsx",
+    "frontend/src/pages/admin/VerificationQueue.tsx",
+    "frontend/src/pages/admin/WaitlistManagement.tsx",
+    "frontend/src/pages/admin/WaiverRecords.tsx",
+    "frontend/src/pages/coming-soon/UnsupportedFeaturesHub.tsx",
+    "frontend/src/pages/dashboards/AdminDashboard.tsx",
+    "frontend/src/pages/dashboards/CustomerDashboard.tsx",
+    "frontend/src/pages/dashboards/GarageOwnerDashboard.tsx",
+    "frontend/src/pages/dashboards/MechanicDashboard.tsx",
+    "frontend/src/pages/disputes/Disputes.tsx",
+    "frontend/src/pages/fix-my-car/FixMyCarIntake.tsx",
+    "frontend/src/pages/fix-my-car/FixMyCarResults.tsx",
+    "frontend/src/pages/garages/GarageBrowse.tsx",
+    "frontend/src/pages/garages/GarageDetail.tsx",
+    "frontend/src/pages/garages/GarageListingEditor.tsx",
+    "frontend/src/pages/mechanics/MechanicBrowse.tsx",
+    "frontend/src/pages/mechanics/MechanicProfileEditor.tsx",
+    "frontend/src/pages/mechanics/MechanicProfilePublic.tsx",
+    "frontend/src/pages/settings/MembershipSettings.tsx",
+    "frontend/src/pages/trust-safety/IdentityVerification.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

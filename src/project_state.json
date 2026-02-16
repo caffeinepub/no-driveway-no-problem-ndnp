@@ -1,0 +1,337 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 5,
+  "summary": "Two-sided marketplace web app (mobile-responsive) for automotive services and DIY garage rentals connecting customers, independent mechanics, and garage owners; modern, clean, trustworthy UX.",
+  "architectural_notes": [
+    "Mobile-responsive web platform with modern/clean/trustworthy UX (Uber + Airbnb + TaskRabbit style).",
+    "Google Maps integration required for garage rental marketplace map and pins.",
+    "Support file uploads for mechanic credentials (ASE), insurance verification, and job photos.",
+    "Unsupported capabilities (e.g., video calls, push notifications, real-time tracking, escrow, real-time chat/messaging) should be presented as simulated UX flows and clearly labeled as “Coming Soon.”"
+  ],
+  "known_issues": [
+    "Attempted full-build implementation failed with: “Sorry, the AI couldn't implement that request. Please rephrase or simplify.”"
+  ],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-implement-authentication-via-internet-identity-and-support-multi-role-accounts-customer-mechanic-garage-owner-and-admin-each-with-its-own-dashboard-and-navigation",
+      "title": "Implement authentication via Internet Identity and support multi-role accounts: Customer, Mechanic, Garage Owner, and Admin, each with its own dashboard and navigation.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-consistent-modern-clean-trustworthy-visual-theme-for-ndnp-colors-typography-spacing-components-and-apply-it-across-all-pages-avoid-blue-purple-as-primary-branding-unless-explicitly-required",
+      "title": "Create a consistent, modern, clean, trustworthy visual theme for NDNP (colors, typography, spacing, components) and apply it across all pages; avoid blue/purple as primary branding unless explicitly required.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-mechanic-marketplace-mechanic-profiles-with-required-fields-media-uploads-verification-statuses-and-public-profile-pages",
+      "title": "Implement the Mechanic Marketplace: mechanic profiles with required fields, media uploads, verification statuses, and public profile pages.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-mechanic-search-browse-and-filtering-for-customers-with-the-specified-filter-set-and-result-sorting-suitable-for-marketplace-discovery",
+      "title": "Implement Mechanic search, browse, and filtering for customers with the specified filter set and result sorting suitable for marketplace discovery.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-customer-to-mechanic-engagement-flows-instant-booking-or-quote-request-flat-rate-pricing-or-custom-quotes-availability-calendar-management-and-booking-lifecycle-visibility-in-dashboards",
+      "title": "Implement customer-to-mechanic engagement flows: instant booking OR quote request, flat-rate pricing or custom quotes, availability calendar management, and booking lifecycle visibility in dashboards.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-ratings-and-reviews-tied-to-completed-mechanic-jobs-and-garage-rentals-including-moderation-controls-for-admin",
+      "title": "Implement ratings and reviews tied to completed mechanic jobs and garage rentals, including moderation controls for Admin.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-garage-rental-marketplace-with-listings-listing-detail-pages-and-the-specified-listing-fields-photos-rules-waiver-tools-pricing-calendar-ratings-deposit-rules",
+      "title": "Implement the Garage Rental Marketplace with listings, listing detail pages, and the specified listing fields (photos, rules, waiver, tools, pricing, calendar, ratings, deposit rules).",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-garage-rental-search-browse-and-filtering-including-an-interactive-map-view-with-pins-for-listing-types-and-the-specified-filter-set",
+      "title": "Implement Garage Rental search, browse, and filtering including an interactive map view with pins for listing types and the specified filter set.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-file-media-upload-handling-for-documents-and-photos-certifications-insurance-verification-before-after-photos-garage-photos-with-size-type-validation-and-secure-access-controls",
+      "title": "Implement file/media upload handling for documents and photos (certifications, insurance verification, before/after photos, garage photos) with size/type validation and secure access controls.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-admin-dashboard-capabilities-to-review-and-manage-marketplace-content-user-role-assignment-as-allowed-mechanic-verification-statuses-ase-insurance-background-and-basic-listing-moderation",
+      "title": "Add Admin dashboard capabilities to review and manage marketplace content: user role assignment (as allowed), mechanic verification statuses (ASE/insurance/background), and basic listing moderation.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-the-core-marketing-entry-experience-a-home-landing-page-that-explains-the-two-marketplaces-mechanics-and-garage-rentals-allows-role-appropriate-calls-to-action-and-routes-users-into-browsing-or-onboarding-flows",
+      "title": "Create the core marketing entry experience: a home/landing page that explains the two marketplaces (Mechanics and Garage Rentals), allows role-appropriate calls-to-action, and routes users into browsing or onboarding flows.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-new-diy-support-layer-entry-point-across-relevant-customer-facing-pages-render-a-prominent-need-help-while-diy-button-on-garage-detail-pages-and-in-the-customer-diy-garage-booking-flow-opening-a-dedicated-diy-support-panel-modal",
+      "title": "Add a new DIY Support Layer entry point across relevant customer-facing pages: render a prominent “Need Help While DIY?” button on Garage Detail pages and in the customer DIY/garage booking flow, opening a dedicated DIY Support panel/modal.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-tool-recommendations-for-a-selected-repair-scenario-within-the-diy-support-panel-allow-the-user-to-choose-a-repair-type-category-and-receive-a-structured-list-of-recommended-tools-and-consumables-that-can-be-saved-to-the-user-s-diy-session",
+      "title": "Implement tool recommendations for a selected repair scenario within the DIY Support panel: allow the user to choose a repair type/category and receive a structured list of recommended tools and consumables that can be saved to the user’s DIY session.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-repair-cost-estimator-in-the-diy-support-panel-collect-basic-inputs-repair-type-vehicle-info-as-free-text-parts-cost-estimate-labor-time-estimate-and-return-a-calculated-estimate-breakdown-store-estimates-in-the-user-s-diy-session-history",
+      "title": "Implement a repair cost estimator in the DIY Support panel: collect basic inputs (repair type, vehicle info as free-text, parts cost estimate, labor time estimate) and return a calculated estimate breakdown; store estimates in the user’s DIY session history.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-add-mechanic-assistance-mid-booking-to-the-garage-rental-booking-experience-as-a-functional-add-on-selection-without-real-time-communication-users-can-request-assistance-choose-assistance-type-and-submit-the-request-the-request-is-stored-and-visible-in-both-customer-and-mechanic-dashboards",
+      "title": "Add “Add mechanic assistance mid-booking” to the garage rental booking experience as a functional add-on selection (without real-time communication): users can request assistance, choose assistance type, and submit the request; the request is stored and visible in both customer and mechanic dashboards.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-simulated-coming-soon-ux-flows-for-unsupported-on-demand-mechanic-consultation-via-video-call-upsell-clearly-labeled-as-coming-soon-and-non-functional-beyond-ui-progression-screens",
+      "title": "Create simulated “Coming Soon” UX flows for unsupported on-demand mechanic consultation via video call upsell, clearly labeled as Coming Soon and non-functional beyond UI progression screens.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-trust-safety-add-user-identity-verification-submission-as-a-functional-workflow-document-upload-status-including-storage-of-verification-status-and-admin-review-approval-rejection-actions",
+      "title": "Implement Trust & Safety: add user identity verification submission as a functional workflow (document upload + status), including storage of verification status and admin review/approval/rejection actions.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-trust-safety-support-insurance-upload-as-a-functional-workflow-for-both-mechanics-and-garage-owners-where-applicable-including-a-persisted-insurance-document-reference-and-status-visible-to-users-and-admins",
+      "title": "Implement Trust & Safety: support insurance upload as a functional workflow for both mechanics and garage owners (where applicable), including a persisted insurance document reference and status visible to users and admins.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-waiver-digital-signing-as-a-functional-workflow-for-garage-rentals-users-can-view-a-waiver-text-accept-sign-typed-name-checkbox-timestamp-and-the-signed-waiver-record-is-stored-and-viewable-in-booking-details-and-admin-tools",
+      "title": "Implement waiver digital signing as a functional workflow for garage rentals: users can view a waiver text, accept/sign (typed name + checkbox + timestamp), and the signed waiver record is stored and viewable in booking details and admin tools.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-dispute-resolution-as-a-functional-ticketing-workflow-allow-customers-mechanics-garage-owners-to-open-disputes-tied-to-a-booking-listing-exchange-non-real-time-updates-comments-status-changes-and-allow-admins-to-resolve-close-disputes-with-a-resolution-note",
+      "title": "Implement dispute resolution as a functional ticketing workflow: allow customers/mechanics/garage owners to open disputes tied to a booking/listing, exchange non-real-time updates (comments/status changes), and allow admins to resolve/close disputes with a resolution note.",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-simulated-coming-soon-ux-for-unsupported-in-app-messaging-push-notifications-real-time-tracking-mechanic-en-route-and-escrow-payment-system-each-must-be-clearly-labeled-coming-soon-and-must-not-imply-actual-delivery-of-those-capabilities",
+      "title": "Add simulated “Coming Soon” UX for unsupported in-app messaging, push notifications, real-time tracking (mechanic en route), and escrow payment system; each must be clearly labeled Coming Soon and must not imply actual delivery of those capabilities.",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-revenue-model-integration-as-functional-backend-calculations-and-admin-reporting-store-platform-fee-commission-settings-mechanic-booking-fee-15-25-garage-rental-commission-10-20-apply-fee-calculation-to-bookings-rentals-and-present-totals-in-an-admin-revenue-tracking-view",
+      "title": "Implement Revenue Model Integration as functional backend calculations and admin reporting: store platform fee/commission settings (mechanic booking fee 15–25%, garage rental commission 10–20%), apply fee calculation to bookings/rentals, and present totals in an admin revenue tracking view.",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-featured-mechanic-boost-option-as-a-functional-feature-flag-with-pricing-metadata-no-external-payment-mechanics-can-opt-in-or-request-a-featured-boost-admin-can-approve-enable-it-and-browse-results-reflect-featured-mechanics-via-a-visible-badge-and-sorting-priority",
+      "title": "Implement featured mechanic boost option as a functional feature flag with pricing metadata (no external payment): mechanics can opt-in (or request) a featured boost, admin can approve/enable it, and browse results reflect featured mechanics via a visible badge and sorting priority.",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-emergency-service-surge-pricing-as-a-functional-pricing-modifier-for-mechanic-services-mechanics-can-toggle-emergency-availability-and-define-a-surge-multiplier-percent-within-allowed-bounds-customer-booking-quote-views-show-the-adjusted-price-when-emergency-is-selected",
+      "title": "Implement emergency service surge pricing as a functional pricing modifier for mechanic services: mechanics can toggle emergency availability and define a surge multiplier/percent within allowed bounds; customer booking/quote views show the adjusted price when emergency is selected.",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-mechanic-monthly-pro-membership-and-customer-diy-membership-as-functional-membership-states-no-external-billing-allow-users-to-activate-deactivate-membership-status-persist-it-and-apply-membership-rules-such-as-discounted-garage-rental-pricing-for-diy-membership-clearly-shown-in-pricing-breakdown",
+      "title": "Implement mechanic monthly pro membership and customer DIY membership as functional membership states (no external billing): allow users to activate/deactivate membership status, persist it, and apply membership rules such as discounted garage rental pricing for DIY membership (clearly shown in pricing breakdown).",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-admin-dashboard-add-a-user-verification-panel-queue-detail-waitlist-management-and-a-geo-heatmap-of-demand-based-on-stored-searches-bookings-aggregated-by-location-string-no-external-maps",
+      "title": "Enhance Admin Dashboard: add a user verification panel (queue + detail), waitlist management, and a geo heatmap of demand based on stored searches/bookings aggregated by location string (no external maps).",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-mobile-first-fix-my-car-entry-experience-a-one-tap-cta-that-opens-an-intake-flow-collecting-issue-description-and-media-upload-photo-video-then-routes-the-user-to-suggested-next-steps-estimated-cost-nearby-mechanics-nearby-rental-bays-ai-pre-diagnosis-suggestions-must-be-simulated-and-labeled-coming-soon",
+      "title": "Add mobile-first “Fix My Car” entry experience: a one-tap CTA that opens an intake flow collecting issue description and media upload (photo/video), then routes the user to suggested next steps (estimated cost, nearby mechanics, nearby rental bays). AI pre-diagnosis suggestions must be simulated and labeled Coming Soon.",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-desktop-focused-browse-ux-enhancements-side-by-side-compare-mechanics-select-up-to-n-mechanics-to-compare-an-advanced-filtering-panel-layout-and-a-map-list-split-screen-mode-for-garages-and-or-mechanics-where-map-content-remains-simulated-coming-soon-if-not-functional",
+      "title": "Add desktop-focused browse UX enhancements: side-by-side compare mechanics (select up to N mechanics to compare), an advanced filtering panel layout, and a map+list split-screen mode for garages and/or mechanics where map content remains simulated/Coming Soon if not functional.",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-clear-coming-soon-labeling-and-simulated-ux-for-apple-pay-google-pay-payment-options-across-checkout-booking-areas-without-integrating-any-external-payment-provider",
+      "title": "Add clear “Coming Soon” labeling and simulated UX for Apple Pay / Google Pay payment options across checkout/booking areas, without integrating any external payment provider.",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-rating-penalty-system-for-no-shows-as-functional-backend-policy-allow-a-booking-rental-to-be-marked-as-no-show-with-role-appropriate-permissions-automatically-apply-a-penalty-record-to-the-responsible-party-and-reflect-it-in-admin-reporting-and-user-dashboards",
+      "title": "Implement a rating penalty system for no-shows as functional backend policy: allow a booking/rental to be marked as no-show (with role-appropriate permissions), automatically apply a penalty record to the responsible party, and reflect it in admin reporting and user dashboards.",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-calendar-drag-and-drop-booking-ux-on-desktop-as-a-simulated-interaction-unless-full-calendar-mutation-support-already-exists-for-that-flow-if-simulated-label-it-coming-soon-and-ensure-it-does-not-break-existing-availability-booking-views",
+      "title": "Add calendar drag-and-drop booking UX on desktop as a simulated interaction unless full calendar mutation support already exists for that flow; if simulated, label it Coming Soon and ensure it does not break existing availability/booking views.",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Implement multi-role accounts (Customer, Mechanic, Garage Owner, Admin) each with dashboard access",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Mechanic marketplace: mechanic profiles (experience, specialties, certifications/ASE upload, insurance upload, background check status), ratings/reviews, before/after photos, service radius map, booking/quote requests, pricing (flat/custom), calendar sync, emergency toggle (premium)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Mechanic marketplace search/filtering (distance, vehicle make/model, specialty, price range, rating, verified only, mobile vs shop-based)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Garage rental marketplace: Google Maps interactive map with pins for DIY bays/lift-equipped/full shop rentals",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Garage rental marketplace filtering (lift type, tool availability, air compressor, welding allowed, 240v power, hourly vs daily rate, insurance required)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Garage listing page details (photos, safety rules, waiver requirement, tool inventory, hourly pricing, booking calendar, host rating, security deposit rules)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "DIY Support Layer: “Need Help While DIY?” button, on-demand mechanic consultation (video call upsell), add mechanic assistance mid-booking, tool recommendations for selected repair, repair cost estimator",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Trust & Safety System: ID verification, insurance upload, escrow payment system, in-app messaging, dispute resolution flow, waiver digital signing, rating penalty system for no-shows",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Revenue Model Integration: platform fees/commissions, featured mechanic boost, emergency service surge pricing, monthly pro membership (mechanics), DIY membership (discounted rentals)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Admin Dashboard enhancements: user verification panel, dispute resolution tools, revenue tracking, geo heatmap of demand, waitlist management",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "UX Improvements (mobile + desktop): one-tap “Fix My Car”, upload photo/video of issue, AI pre-diagnosis suggestions, estimated cost + nearby mechanics + nearby rental bays, thumb-friendly filtering, Apple Pay/Google Pay, push notifications, real-time en-route tracking, desktop compare mechanics, advanced filtering panel, service breakdown cost estimator, map+list split screen, drag-and-drop calendar booking",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "No Driveway No Problem (NDNP)",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}
